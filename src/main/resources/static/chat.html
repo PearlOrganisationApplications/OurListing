@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+<input type="text" id="Bearer" placeholder="Token">
+<button onclick="connect()">Connect</button>
+
+<input type="text" id="recipient" placeholder="Recipient Username">
+<input type="text" id="message" placeholder="Message">
+<button onclick="sendMessage()">Send</button>
+
+<div id="chatArea"></div>
+
+<script>
+    let stompClient = null;
+
+    function connect() {
+        const token = document.getElementById('Bearer').value;
+        var socket = new WebSocket('wss://propertyNet.ddns.net/ws/chat');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({"Authorization": "Bearer " + token}, function (frame) {
+            console.log('Connected: ' + frame);
+
+            // Subscribe to the user's private messages
+            stompClient.subscribe('/user/queue/messages', function (message) {
+                const chatMessage = JSON.parse(message.body);
+                displayMessage(chatMessage);
+            });
+        }, function (error) {
+            console.error('Connection error: ' + error);
+        });
+    }
+
+    function sendMessage() {
+        const recipient = document.getElementById('recipient').value;
+        const content = document.getElementById('message').value;
+
+        if (!stompClient || !stompClient.connected) {
+            alert("You must connect first!");
+            return;
+        }
+
+        const chatMessage = { sender: 'yourUsername', recipient: recipient, content: content }; // Replace 'yourUsername' with the actual sender's username
+        stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+
+        // Clear the message input
+        document.getElementById('message').value = '';
+    }
+
+    function displayMessage(chatMessage) {
+        const chatArea = document.getElementById('chatArea');
+        chatArea.innerHTML += `<p><strong>${chatMessage.sender}:</strong> ${chatMessage.content}</p>`;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Notifications</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+<h1>Global Notifications</h1>
+<div id="notifications"></div>
+<input type="text" id="notificationContext" placeholder="Enter notification context">
+<input type="text" id="notificationMessage" placeholder="Enter notification message">
+<button onclick="sendNotification()">Send Notification</button>
+<script>
+    var socket = new WebSocket('wss://propertyNet.ddns.net/ws/notifications');
+    var stompClient = Stomp.over(socket);
+
+    stompClient.connect({"detect":"false"}, function (frame) {
+    console.log('Connected: ' + frame);
+
+    setTimeout(() => {
+        stompClient.subscribe('/topic/notifications', function (notification) {
+            console.log("Received Notification: ", notification.body);
+            showNotification(JSON.parse(notification.body));
+        });
+    }, 500); // Small delay to ensure connection stability
+});
+
+
+    function showNotification(notification) {
+    var notificationsDiv = document.getElementById('notifications');
+    var notificationElement = document.createElement('div');
+    notificationElement.textContent = 'Context: ' + notification.context +
+        ', message: ' + notification.message; // Fix line break here
+    notificationsDiv.appendChild(notificationElement);
+}
+
+
+    function sendNotification() {
+    if (!stompClient || !stompClient.connected) {
+        console.error("WebSocket is not connected.");
+        return;
+    }
+
+    var context = document.getElementById('notificationContext').value;
+    var message = document.getElementById('notificationMessage').value;
+
+    stompClient.send("/app/notification", {}, JSON.stringify({'context': context, 'message': message}));
+}
+
+</script>
+</body>
+</html>
