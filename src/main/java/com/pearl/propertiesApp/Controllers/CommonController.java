@@ -4,10 +4,7 @@ import com.pearl.propertiesApp.DTOs.RequestDTO;
 import com.pearl.propertiesApp.Services.CommonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -19,4 +16,15 @@ public class CommonController {
     public ResponseEntity<?> register(@ModelAttribute RequestDTO.registerRequestDTO request){
         return services.register(request);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@ModelAttribute RequestDTO.loginRequestDTO request){
+        return services.login(request);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<?> login(@RequestHeader("Authorization") String auth){
+        return services.loginGET(auth.substring(7));
+    }
+
 }

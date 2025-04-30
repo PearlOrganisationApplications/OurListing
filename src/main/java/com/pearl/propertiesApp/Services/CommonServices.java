@@ -3,6 +3,7 @@ package com.pearl.propertiesApp.Services;
 import com.pearl.propertiesApp.DTOs.RequestDTO;
 import com.pearl.propertiesApp.Entities.Users;
 import com.pearl.propertiesApp.Repositories.UsersRepository;
+import com.pearl.propertiesApp.Utilities.JwtTokenUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ public class CommonServices {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UsersRepository usersRepository;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Transactional
     public ResponseEntity<?> register(RequestDTO.registerRequestDTO request) {
@@ -33,5 +36,20 @@ public class CommonServices {
         user.setAddress(request.getAddress());
         user.setRole(Users.role.valueOf(request.getRole()));
         return ResponseEntity.ok(usersRepository.save(user));
+    }
+
+    public ResponseEntity<?> login(RequestDTO.loginRequestDTO request) {
+        Users user = usersRepository.findByEmail(request.getEmail()).orElse(new Users());
+        if(user.getIsVerified() && passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            return ResponseEntity.ok(jwtTokenUtil.generateToken(user.getEmail(),
+                    String.valueOf(user.getRole())));
+        }
+        else return ResponseEntity.badRequest().body("Invalid Credentials");
+    }
+
+    public ResponseEntity<?> loginGET(String substring) {
+        Users user=usersRepository.findByToken(substring)
+                .orElseThrow(()->new RuntimeException("Session Expired"));
+        return ResponseEntity.ok(user);
     }
 }
