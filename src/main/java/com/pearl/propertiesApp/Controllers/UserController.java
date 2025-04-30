@@ -1,8 +1,6 @@
 package com.pearl.propertiesApp.Controllers;
 
 import com.pearl.propertiesApp.DTOs.RequestDTO;
-import com.pearl.propertiesApp.Entities.PaymentDetails;
-import com.pearl.propertiesApp.Entities.PaymentHistory;
 import com.pearl.propertiesApp.Services.CommonServices;
 import com.pearl.propertiesApp.Services.PropertiesService;
 import com.pearl.propertiesApp.Services.UsersService;
@@ -21,26 +19,6 @@ public class UserController {
 
     @Autowired
     private PropertiesService propertiesService;
-
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RequestDTO.registerRequestDTO request) {
-        return commonServices.register(request);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody RequestDTO.loginRequestDTO request) {
-        return commonServices.login(request);
-    }
-
-    @GetMapping("/login")
-    public ResponseEntity<?> loginWithToken(@RequestHeader("Authorization") String auth) {
-        return commonServices.loginGET(auth.substring(7));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
-        return usersService.getUserById(id);
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id,
