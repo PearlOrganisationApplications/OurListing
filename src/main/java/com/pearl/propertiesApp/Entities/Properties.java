@@ -38,6 +38,10 @@ public class Properties {
     @ElementCollection
     private List<String> photos;
 
+    @JsonIgnore
+    @ElementCollection
+    private List<String> Documents;
+
     @Enumerated(EnumType.STRING)
     private type propertyType;
 
