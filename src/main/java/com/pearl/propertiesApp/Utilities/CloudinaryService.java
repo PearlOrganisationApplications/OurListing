@@ -36,7 +36,7 @@ public class CloudinaryService {
                 ObjectUtils.asMap(
                         "public_id", ID,
                         "resource_type", "video",
-                        "folder", "SocietyVideos"));
+                        "folder", "PropertyVideos"));
         log.info((String) uploadResult.get("public_id"));
 
 
@@ -47,7 +47,7 @@ public class CloudinaryService {
         Map<?, ?> uploadResult = cloudinary.uploader().uploadLarge(file.getBytes(),
                 ObjectUtils.asMap("public_id", ID,
                         "resource_type", "image",
-                        "folder", "SocietyPhotos"));
+                        "folder", "PropertyPhotos"));
 //        String publicId = (String) uploadResult.get("public_id");
         log.info((String) uploadResult.get("public_id"));
         //       return cloudinary.url().transformation(new Transformation<>()
