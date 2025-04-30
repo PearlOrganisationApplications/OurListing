@@ -24,11 +24,26 @@ public class Users {
 
     @Column(unique = true)
     private String number;
+
     private String address;
     private String token;
 
     @JsonIgnore
     private Boolean isVerified = false;
+
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private PaymentDetails paymentDetails;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Column(unique = false)
+    @JoinColumn
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<PaymentHistory> paymentHistory;
+
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -40,6 +55,10 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private role role;
     public enum role{
-        ADMIN,BUYER,OWNER,BROKER,LANDER
+        ADMIN,
+        BUYER,
+        OWNER,
+        BROKER,
+        LANDER
     }
 }
