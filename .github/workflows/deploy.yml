@@ -1,0 +1,24 @@
+name: Property App Ci/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: SSH to Server and Clone Repo
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: 194.164.150.186
+          username: root
+          password: PearlVpsRoot@12390
+          script: |
+            cd /home/ubuntu/
+            sudo ./update.sh
