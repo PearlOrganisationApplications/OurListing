@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
 import java.util.List;
 
 @Data
@@ -46,15 +47,14 @@ public class Users {
 
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Column(unique = false)
-    @JoinColumn
+    @ElementCollection
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Properties> favorites;
 
     @Enumerated(EnumType.STRING)
     private role role;
-    public enum role{
+
+    public enum role {
         ADMIN,
         BUYER,
         OWNER,

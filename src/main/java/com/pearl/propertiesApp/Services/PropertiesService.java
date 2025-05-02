@@ -7,6 +7,7 @@ import com.pearl.propertiesApp.Repositories.PropertiesRepository;
 import com.pearl.propertiesApp.Repositories.UsersRepository;
 import com.pearl.propertiesApp.Utilities.CloudinaryService;
 import com.pearl.propertiesApp.Utilities.FileStackService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class PropertiesService {
     @Autowired
@@ -52,31 +54,27 @@ public class PropertiesService {
             property.setLatitude(request.getLatitude());
             property.setLongitude(request.getLongitude());
 
-            List<String> photoList=new ArrayList<>();
-            if(request.getPhotos()!=null&&!request.getPhotos().isEmpty()){
-                for(MultipartFile photo:request.getPhotos()){
-                    String uid= String.valueOf(UUID.randomUUID());
-                    cloudinaryService.uploadFile(photo,uid);
+            List<String> photoList = new ArrayList<>();
+            if (request.getPhotos() != null && !request.getPhotos().isEmpty()) {
+                for (MultipartFile photo : request.getPhotos()) {
+                    String uid = String.valueOf(UUID.randomUUID());
+                    cloudinaryService.uploadFile(photo, uid);
                     photoList.add(cloudinaryService.getPhotoUrl(uid));
                 }
-                property.setPhotos(photoList);
-            }
-            else{
+            } else {
                 return ResponseEntity.badRequest().body("Photos not Found");
             }
-            photoList.clear();
+            property.setPhotos(photoList);
 
-            List<String> documentList=new ArrayList<>();
-            if(request.getDocuments()!=null&&!request.getDocuments().isEmpty()){
-                for(MultipartFile document:request.getDocuments()){
+            List<String> documentList = new ArrayList<>();
+            if (request.getDocuments() != null && !request.getDocuments().isEmpty()) {
+                for (MultipartFile document : request.getDocuments()) {
                     documentList.add(fileStackService.uploadFile(document));
                 }
-                property.setDocuments(documentList);
-            }
-            else{
+            } else {
                 return ResponseEntity.badRequest().body("Documents not Found");
             }
-            documentList.clear();
+            property.setDocuments(documentList);
 
             property.setPropertyType(Properties.type.valueOf(request.getPropertyType()));
             property.setFeatures(request.getFeatures());
@@ -145,11 +143,11 @@ public class PropertiesService {
             existingProperty.setLandArea(request.getLandArea());
             existingProperty.setLatitude(request.getLatitude());
             existingProperty.setLongitude(request.getLongitude());
-            List<String> photoList=new ArrayList<>();
-            if(request.getPhotos()!=null&&!request.getPhotos().isEmpty()){
-                for(MultipartFile photo:request.getPhotos()){
-                    String uid= String.valueOf(UUID.randomUUID());
-                    cloudinaryService.uploadFile(photo,uid);
+            List<String> photoList = new ArrayList<>();
+            if (request.getPhotos() != null && !request.getPhotos().isEmpty()) {
+                for (MultipartFile photo : request.getPhotos()) {
+                    String uid = String.valueOf(UUID.randomUUID());
+                    cloudinaryService.uploadFile(photo, uid);
                     photoList.add(cloudinaryService.getPhotoUrl(uid));
                 }
                 existingProperty.setPhotos(photoList);

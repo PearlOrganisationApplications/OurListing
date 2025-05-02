@@ -20,7 +20,7 @@ public class PropertiesController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addProperties(@RequestHeader("Authorization") String auth,
-                                           @RequestBody RequestDTO.propertyRequest request) {
+                                           @ModelAttribute RequestDTO.propertyRequest request) {
         return propertiesService.addProperty(auth.substring(7), request);
     }
 
@@ -38,7 +38,7 @@ public class PropertiesController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProperty(@RequestHeader("Authorization") String auth,
                                             @PathVariable Long id,
-                                            @RequestBody RequestDTO.propertyRequest request) {
+                                            @ModelAttribute RequestDTO.propertyRequest request) {
         return propertiesService.updateProperty(auth.substring(7), id, request);
     }
 
@@ -50,13 +50,13 @@ public class PropertiesController {
 
     @PutMapping("/payment-details")
     public ResponseEntity<?> updatePaymentDetails(@RequestHeader("Authorization") String auth,
-                                                  @RequestBody PaymentDetails paymentDetails) {
+                                                  @ModelAttribute PaymentDetails paymentDetails) {
         return usersService.updatePaymentDetails(auth.substring(7), paymentDetails);
     }
 
     @PostMapping("/payment-history")
     public ResponseEntity<?> addPaymentHistory(@RequestHeader("Authorization") String auth,
-                                               @RequestBody PaymentHistory paymentHistory) {
+                                               @ModelAttribute PaymentHistory paymentHistory) {
         return usersService.addPaymentHistory(auth.substring(7), paymentHistory);
     }
 

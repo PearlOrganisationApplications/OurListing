@@ -22,12 +22,12 @@ public class CommonServices {
     @Transactional
     public ResponseEntity<?> register(RequestDTO.registerRequestDTO request) {
 
-        Users user =usersRepository.findByEmail(request.getEmail()).orElse(new Users());
+        Users user = usersRepository.findByEmail(request.getEmail()).orElse(new Users());
 
-        if(usersRepository.existsByNumberAndIsVerifiedTrue(request.getNumber()))
+        if (usersRepository.existsByNumberAndIsVerifiedTrue(request.getNumber()))
             return ResponseEntity.badRequest().body("Phone Number is Registered to Another User");
 
-        if(user.getIsVerified()) return ResponseEntity.badRequest().body("User Already Exists");
+        if (user.getIsVerified()) return ResponseEntity.badRequest().body("User Already Exists");
 
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -40,16 +40,16 @@ public class CommonServices {
 
     public ResponseEntity<?> login(RequestDTO.loginRequestDTO request) {
         Users user = usersRepository.findByEmail(request.getEmail()).orElse(new Users());
-        if(user.getIsVerified() && passwordEncoder.matches(request.getPassword(), user.getPassword())){
-            return ResponseEntity.ok(jwtTokenUtil.generateToken(user.getEmail(),
+        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            user.setToken(jwtTokenUtil.generateToken(user.getEmail(),
                     String.valueOf(user.getRole())));
-        }
-        else return ResponseEntity.badRequest().body("Invalid Credentials");
+            return ResponseEntity.ok(usersRepository.save(user));
+        } else return ResponseEntity.badRequest().body("Invalid Credentials");
     }
 
     public ResponseEntity<?> loginGET(String substring) {
-        Users user=usersRepository.findByToken(substring)
-                .orElseThrow(()->new RuntimeException("Session Expired"));
+        Users user = usersRepository.findByToken(substring)
+                .orElseThrow(() -> new RuntimeException("Session Expired"));
         return ResponseEntity.ok(user);
     }
 }

@@ -31,13 +31,13 @@ public class CommonController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping()
     public ResponseEntity<?> updateUser(@RequestHeader("Authorization") String auth,
-                                        @RequestBody RequestDTO.updateUserRequest request) {
+                                        @ModelAttribute RequestDTO.updateUserRequest request) {
         return usersService.updateUser(auth.substring(7), request);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping()
     public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String auth) {
         return usersService.deleteUser(auth.substring(7));
     }
