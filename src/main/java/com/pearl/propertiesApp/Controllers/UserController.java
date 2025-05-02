@@ -1,7 +1,5 @@
 package com.pearl.propertiesApp.Controllers;
 
-import com.pearl.propertiesApp.DTOs.RequestDTO;
-import com.pearl.propertiesApp.Services.CommonServices;
 import com.pearl.propertiesApp.Services.PropertiesService;
 import com.pearl.propertiesApp.Services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,25 +13,18 @@ public class UserController {
     private UsersService usersService;
 
     @Autowired
-    private CommonServices commonServices;
-
-    @Autowired
     private PropertiesService propertiesService;
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id,
-                                        @RequestBody RequestDTO.updateUserRequest request) {
-        return usersService.updateUser(id, request);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        return usersService.deleteUser(id);
-    }
 
     @GetMapping("/properties")
     public ResponseEntity<?> getProperties() {
         return propertiesService.getAllProperties();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPropertyById(@RequestHeader("Authorization") String auth,
+                                             @PathVariable Long id) {
+        return propertiesService.getPropertyById(auth.substring(7), id);
     }
 
     @PostMapping("/favorites/{propertyId}")

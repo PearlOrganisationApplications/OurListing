@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +31,8 @@ public class UsersService {
         return ResponseEntity.ok(user.get());
     }
 
-    public ResponseEntity<?> updateUser(Long id, RequestDTO.updateUserRequest request) {
-        Optional<Users> userOptional = usersRepository.findById(id);
+    public ResponseEntity<?> updateUser(String id, RequestDTO.updateUserRequest request) {
+        Optional<Users> userOptional = usersRepository.findByToken(id);
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
@@ -50,11 +51,12 @@ public class UsersService {
         return ResponseEntity.ok(updatedUser);
     }
 
-    public ResponseEntity<?> deleteUser(Long id) {
-        if (!usersRepository.existsById(id)) {
+    public ResponseEntity<?> deleteUser(String id) {
+        if (!usersRepository.existsByToken(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
-        usersRepository.deleteById(id);
+        usersRepository.delete(usersRepository.findByToken(id).orElseThrow(() ->
+                new RuntimeException("User not Found")));
         return ResponseEntity.ok("User deleted successfully");
     }
 
@@ -63,16 +65,15 @@ public class UsersService {
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
-        Properties property=propertiesRepository.findById(propertyId).orElseThrow(
-                ()->new RuntimeException("Property not found")
+        Properties property = propertiesRepository.findById(propertyId).orElseThrow(
+                () -> new RuntimeException("Property not found")
         );
 
         Users user = userOptional.get();
         List<Properties> favorites = user.getFavorites();
         if (!favorites.contains(property)) {
             favorites.add(property);
-        }
-        else{
+        } else {
             favorites.remove(property);
         }
         user.setFavorites(favorites);
