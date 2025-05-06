@@ -23,7 +23,7 @@ import java.util.Set;
 @Configuration
 public class AuthChannelInterceptor implements ChannelInterceptor {
     @Autowired
-    private UsersRepository userRepository; // Your user repository
+    private UsersRepository userRepository;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -36,42 +36,39 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
                 return message;
             }
 
-
             String token = accessor.getFirstNativeHeader("Authorization");
             if (token == null || !token.startsWith("Bearer ")) {
                 throw new AuthenticationCredentialsNotFoundException("No token provided");
             }
 
+            token = token.substring(7);
 
-            if (token != null && token.startsWith("Bearer ")) {
-                token = token.substring(7);
+            try {
+                // Validate the token
+                if (userRepository.existsByToken(token)) {
 
-                try {
-                    // Validate the token
-                    if (userRepository.existsByToken(token)) {
+                    Users user = userRepository.findByToken(token)
+                            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-                        Users user = userRepository.findByToken(token)
-                                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-                        Set<GrantedAuthority> authorities = new HashSet<>();
-                        if (user.getRole() != null) {
-                            authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
-                        }
-
-                        // Create authentication
-                        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                                user.getEmail(),
-                                user.getPassword(),
-                                authorities
-                        );
-
-                        accessor.setUser(authentication);
-                        return message;
+                    Set<GrantedAuthority> authorities = new HashSet<>();
+                    if (user.getRole() != null) {
+                        authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
                     }
-                } catch (Exception e) {
-                    throw new AuthenticationCredentialsNotFoundException("Invalid token", e);
+
+                    // Create authentication
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(
+                            user.getEmail(),
+                            user.getPassword(),
+                            authorities
+                    );
+
+                    accessor.setUser(authentication);
+                    return message;
                 }
+            } catch (Exception e) {
+                throw new AuthenticationCredentialsNotFoundException("Invalid token", e);
             }
+
 
             throw new AuthenticationCredentialsNotFoundException("No token provided");
         }

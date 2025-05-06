@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>WebSocket Notifications</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
 <h1>Global Notifications</h1>
 <div id="notifications"></div>
-<input type="text" id="notificationContext" placeholder="Enter notification context">
-<input type="text" id="notificationMessage" placeholder="Enter notification message">
+<input id="notificationContext" placeholder="Enter notification context" type="text">
+<input id="notificationMessage" placeholder="Enter notification message" type="text">
 <button onclick="sendNotification()">Send Notification</button>
 <script>
-    var socket = new WebSocket('wss://propertyNet.ddns.net/ws/notifications');
+    var socket = new WebSocket('wss://propertyapp.ddns.net/ws/notifications');
     var stompClient = Stomp.over(socket);
 
     stompClient.connect({"detect":"false"}, function (frame) {

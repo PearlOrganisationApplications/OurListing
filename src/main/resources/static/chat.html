@@ -21,7 +21,7 @@
 
     function connect() {
         const token = document.getElementById('Bearer').value;
-        var socket = new WebSocket('wss://propertyNet.ddns.net/ws/chat');
+        var socket = new WebSocket('wss://propertyapp.ddns.net/ws/chat');
         stompClient = Stomp.over(socket);
 
         stompClient.connect({"Authorization": "Bearer " + token}, function (frame) {
