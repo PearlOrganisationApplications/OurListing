@@ -125,4 +125,9 @@ public class UsersService {
         Users user = userOptional.get();
         return ResponseEntity.ok(user.getPaymentHistory());
     }
+
+    public ResponseEntity<?> getUseryById(Long id) {
+        return ResponseEntity.ok(usersRepository.findById(id).orElseThrow(()->
+                new RuntimeException("User not found")));
+    }
 }

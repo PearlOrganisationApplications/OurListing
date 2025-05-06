@@ -122,6 +122,20 @@ public class PropertiesService {
         }
     }
 
+    public ResponseEntity<?> getPropertyById(Long id) {
+        try {
+            Properties property = propertiesRepository.findById(id).orElseThrow(()->
+                    new RuntimeException("Property not found"));
+            if (property == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Property not found");
+            }
+            return ResponseEntity.ok(property);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error fetching property: " + e.getMessage());
+        }
+    }
+
     public ResponseEntity<?> updateProperty(String token, Long id, RequestDTO.propertyRequest request) {
         try {
             Optional<Users> userOptional = usersRepository.findByToken(token);

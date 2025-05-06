@@ -21,10 +21,14 @@ public class UserController {
         return propertiesService.getAllProperties();
     }
 
+    @GetMapping("/properties/{Id}")
+    public ResponseEntity<?> getProperties(@PathVariable Long Id) {
+        return propertiesService.getPropertyById(Id);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPropertyById(@RequestHeader("Authorization") String auth,
-                                             @PathVariable Long id) {
-        return propertiesService.getPropertyById(auth.substring(7), id);
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        return usersService.getUseryById(id);
     }
 
     @PostMapping("/favorites/{propertyId}")
