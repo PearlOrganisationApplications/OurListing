@@ -43,10 +43,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/admin", "/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/properties", "/properties/**")
-                        .hasAnyAuthority("OWNER","BROKER","LANDER")
+                        .hasAnyAuthority("OWNER", "BROKER", "LANDER")
                         .requestMatchers("/error", "/error/**").permitAll()
                         .requestMatchers("/user", "/user/**").hasAuthority("BUYER")
                         .requestMatchers("/api", "/api/**").permitAll()
+                        .requestMatchers("/index.html",
+                                "/chat.html",
+                                "/ws",
+                                "/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
