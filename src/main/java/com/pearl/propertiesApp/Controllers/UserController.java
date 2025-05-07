@@ -42,5 +42,4 @@ public class UserController {
         return usersService.getFavorites(auth.substring(7));
     }
 
-
 }

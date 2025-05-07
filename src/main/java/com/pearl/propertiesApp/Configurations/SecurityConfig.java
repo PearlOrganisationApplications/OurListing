@@ -45,7 +45,8 @@ public class SecurityConfig {
                         .requestMatchers("/properties", "/properties/**")
                         .hasAnyAuthority("OWNER", "BROKER", "LANDER")
                         .requestMatchers("/error", "/error/**").permitAll()
-                        .requestMatchers("/user", "/user/**").hasAuthority("BUYER")
+                        .requestMatchers("/user", "/user/**")
+                        .hasAnyAuthority("BUYER", "OWNER", "BROKER", "LANDER")
                         .requestMatchers("/api", "/api/**").permitAll()
                         .requestMatchers("/error",
                                 "/error/**",

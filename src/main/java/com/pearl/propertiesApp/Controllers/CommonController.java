@@ -17,29 +17,49 @@ public class CommonController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@ModelAttribute RequestDTO.registerRequestDTO request) {
-        return services.register(request);
+        try {
+            return services.register(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@ModelAttribute RequestDTO.loginRequestDTO request) {
-        return services.login(request);
+        try {
+            return services.login(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
     }
 
     @GetMapping("/login")
     public ResponseEntity<?> login(@RequestHeader("Authorization") String auth) {
-        return services.loginGET(auth.substring(7));
+        try {
+            return services.loginGET(auth.substring(7));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
     }
 
 
     @PutMapping()
     public ResponseEntity<?> updateUser(@RequestHeader("Authorization") String auth,
                                         @ModelAttribute RequestDTO.updateUserRequest request) {
-        return usersService.updateUser(auth.substring(7), request);
+        try {
+            return usersService.updateUser(auth.substring(7), request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
     }
 
     @DeleteMapping()
     public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String auth) {
-        return usersService.deleteUser(auth.substring(7));
+        try {
+            return usersService.deleteUser(auth.substring(7));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
     }
 
 }
