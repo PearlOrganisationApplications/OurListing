@@ -40,35 +40,35 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             if (token == null || !token.startsWith("Bearer ")) {
                 throw new AuthenticationCredentialsNotFoundException("No token provided");
             }
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7);
 
-            token = token.substring(7);
+                try {
+                    // Validate the token
+                    if (userRepository.existsByToken(token)) {
 
-            try {
-                // Validate the token
-                if (userRepository.existsByToken(token)) {
+                        Users user = userRepository.findByToken(token)
+                                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-                    Users user = userRepository.findByToken(token)
-                            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                        Set<GrantedAuthority> authorities = new HashSet<>();
+                        if (user.getRole() != null) {
+                            authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
+                        }
 
-                    Set<GrantedAuthority> authorities = new HashSet<>();
-                    if (user.getRole() != null) {
-                        authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
+                        // Create authentication
+                        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                                user.getEmail(),
+                                user.getPassword(),
+                                authorities
+                        );
+
+                        accessor.setUser(authentication);
+                        return message;
                     }
-
-                    // Create authentication
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(
-                            user.getEmail(),
-                            user.getPassword(),
-                            authorities
-                    );
-
-                    accessor.setUser(authentication);
-                    return message;
+                } catch (Exception e) {
+                    throw new AuthenticationCredentialsNotFoundException("Invalid token", e);
                 }
-            } catch (Exception e) {
-                throw new AuthenticationCredentialsNotFoundException("Invalid token", e);
             }
-
 
             throw new AuthenticationCredentialsNotFoundException("No token provided");
         }
