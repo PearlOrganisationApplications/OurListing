@@ -28,13 +28,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setAllowedOriginPatterns("*")
                 .setAllowedOrigins("https://propertyapp.ddns.net/",
                         "http://localhost:3123",
-                        "http://127.0.0.1");
+                        "http://127.0.0.1").withSockJS();
 
         registry.addEndpoint("/ws/chat")
                 .setAllowedOriginPatterns("*")
                 .setAllowedOrigins("https://propertyapp.ddns.net/",
                         "http://localhost:3123",
-                        "http://127.0.0.1");
+                        "http://127.0.0.1").withSockJS();
     }
 
 
