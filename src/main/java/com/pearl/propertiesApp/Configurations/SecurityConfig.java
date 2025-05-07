@@ -47,10 +47,18 @@ public class SecurityConfig {
                         .requestMatchers("/error", "/error/**").permitAll()
                         .requestMatchers("/user", "/user/**").hasAuthority("BUYER")
                         .requestMatchers("/api", "/api/**").permitAll()
-                        .requestMatchers("/index.html",
+                        .requestMatchers("/error",
+                                "/error/**",
+                                "/index.html",
                                 "/chat.html",
                                 "/ws",
-                                "/ws/**").permitAll()
+                                "/ws/**",
+                                "/app",
+                                "/app/**",
+                                "/app/notification",
+                                "/ws/notifications",
+                                "/topic",
+                                "/topic/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
