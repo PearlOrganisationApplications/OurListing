@@ -2,6 +2,7 @@ package com.pearl.propertiesApp.Controllers;
 
 import com.pearl.propertiesApp.DTOs.RequestDTO;
 import com.pearl.propertiesApp.Services.CommonServices;
+import com.pearl.propertiesApp.Services.PropertiesService;
 import com.pearl.propertiesApp.Services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,9 @@ public class CommonController {
     private CommonServices services;
     @Autowired
     private UsersService usersService;
+    @Autowired
+    private PropertiesService propertiesService;
+
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@ModelAttribute RequestDTO.registerRequestDTO request) {
@@ -42,6 +46,10 @@ public class CommonController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        return usersService.getUseryById(id);
+    }
 
     @PutMapping()
     public ResponseEntity<?> updateUser(@RequestHeader("Authorization") String auth,
@@ -60,6 +68,16 @@ public class CommonController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getLocalizedMessage());
         }
+    }
+
+    @GetMapping("/properties")
+    public ResponseEntity<?> getProperties() {
+        return propertiesService.getAllProperties();
+    }
+
+    @GetMapping("/properties/{Id}")
+    public ResponseEntity<?> getProperties(@PathVariable Long Id) {
+        return propertiesService.getPropertyById(Id);
     }
 
 }

@@ -15,7 +15,6 @@ public class UserController {
     @Autowired
     private PropertiesService propertiesService;
 
-
     @GetMapping("/properties")
     public ResponseEntity<?> getProperties() {
         return propertiesService.getAllProperties();
@@ -24,11 +23,6 @@ public class UserController {
     @GetMapping("/properties/{Id}")
     public ResponseEntity<?> getProperties(@PathVariable Long Id) {
         return propertiesService.getPropertyById(Id);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        return usersService.getUseryById(id);
     }
 
     @PostMapping("/favorites/{propertyId}")
