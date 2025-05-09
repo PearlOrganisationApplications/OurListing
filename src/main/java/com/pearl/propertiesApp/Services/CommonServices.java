@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CommonServices {
     @Autowired
@@ -23,9 +25,12 @@ public class CommonServices {
     public ResponseEntity<?> register(RequestDTO.registerRequestDTO request) {
 
         Users user = usersRepository.findByEmail(request.getEmail()).orElse(new Users());
-
-        if (usersRepository.existsByNumberAndIsVerifiedTrue(request.getNumber()))
-            return ResponseEntity.badRequest().body("Phone Number is Registered to Another User");
+        Optional<Users> usersOptional = usersRepository.findByNumber(request.getNumber());
+        if (usersOptional.isPresent()) {
+            user = usersOptional.get();
+            if (user.getIsVerified()) return ResponseEntity.badRequest()
+                    .body("Phone Number is Registered to Another User");
+        }
 
         if (user.getIsVerified()) return ResponseEntity.badRequest().body("User Already Exists");
 
