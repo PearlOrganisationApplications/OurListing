@@ -1,5 +1,6 @@
 package com.pearl.propertiesApp.Services;
 
+import com.paypal.api.payments.*;
 import com.pearl.propertiesApp.DTOs.RequestDTO;
 import com.pearl.propertiesApp.Entities.Properties;
 import com.pearl.propertiesApp.Entities.Users;
@@ -124,7 +125,7 @@ public class PropertiesService {
 
     public ResponseEntity<?> getPropertyById(Long id) {
         try {
-            Properties property = propertiesRepository.findById(id).orElseThrow(()->
+            Properties property = propertiesRepository.findById(id).orElseThrow(() ->
                     new RuntimeException("Property not found"));
             if (property == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Property not found");
@@ -203,6 +204,35 @@ public class PropertiesService {
     }
 
     public ResponseEntity<?> getPropertyByRadius(Double lat, Double longi, Double rad) {
-        return ResponseEntity.ok().body(propertiesRepository.findPropertiesWithinRadius(lat,longi,rad));
+        return ResponseEntity.ok().body(propertiesRepository.findPropertiesWithinRadius(lat, longi, rad));
     }
+
+
+    public Payment getPayment(double sum) {
+        Amount amount = new Amount();
+        amount.setCurrency("USD");
+        amount.setTotal(String.format("%.2f", sum));
+
+        Transaction transaction = new Transaction();
+        transaction.setDescription("Payment description");
+        transaction.setAmount(amount);
+
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.add(transaction);
+
+        Payer payer = new Payer();
+        payer.setPaymentMethod("paypal");
+
+        RedirectUrls redirectUrls = new RedirectUrls();
+        redirectUrls.setCancelUrl("http://localhost:8080/api/paypal/cancel");
+        redirectUrls.setReturnUrl("http://localhost:8080/api/paypal/success");
+
+        Payment payment = new Payment();
+        payment.setIntent("sale");
+        payment.setPayer(payer);
+        payment.setTransactions(transactions);
+        payment.setRedirectUrls(redirectUrls);
+        return payment;
+    }
+
 }
