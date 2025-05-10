@@ -25,6 +25,13 @@ public class UserController {
         return propertiesService.getPropertyById(Id);
     }
 
+    @GetMapping("/properties/nearby")
+    public ResponseEntity<?> getProperties(@RequestParam("latitude") Double lat,
+                                           @RequestParam("longitude") Double longi,
+                                           @RequestParam("radius") Double rad) {
+        return propertiesService.getPropertyByRadius(lat, longi, rad);
+    }
+
     @PostMapping("/favorites/{propertyId}")
     public ResponseEntity<?> addToFavorites(@RequestHeader("Authorization") String auth,
                                             @PathVariable Long propertyId) {

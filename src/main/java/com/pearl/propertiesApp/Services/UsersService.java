@@ -79,7 +79,7 @@ public class UsersService {
         user.setFavorites(favorites);
 
         usersRepository.save(user);
-        return ResponseEntity.ok("Property added to favorites");
+        return ResponseEntity.ok(favorites);
     }
 
     public ResponseEntity<?> getFavorites(String token) {
@@ -127,7 +127,7 @@ public class UsersService {
     }
 
     public ResponseEntity<?> getUseryById(Long id) {
-        return ResponseEntity.ok(usersRepository.findById(id).orElseThrow(()->
+        return ResponseEntity.ok(usersRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("User not found")));
     }
 }

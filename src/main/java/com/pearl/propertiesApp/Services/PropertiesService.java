@@ -201,4 +201,8 @@ public class PropertiesService {
     public ResponseEntity<?> getAllProperties() {
         return ResponseEntity.ok(propertiesRepository.findAll());
     }
+
+    public ResponseEntity<?> getPropertyByRadius(Double lat, Double longi, Double rad) {
+        return ResponseEntity.ok().body(propertiesRepository.findPropertiesWithinRadius(lat,longi,rad));
+    }
 }
