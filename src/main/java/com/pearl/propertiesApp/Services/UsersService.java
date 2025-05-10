@@ -1,7 +1,6 @@
 package com.pearl.propertiesApp.Services;
 
 import com.pearl.propertiesApp.DTOs.RequestDTO;
-import com.pearl.propertiesApp.Entities.PaymentDetails;
 import com.pearl.propertiesApp.Entities.PaymentHistory;
 import com.pearl.propertiesApp.Entities.Properties;
 import com.pearl.propertiesApp.Entities.Users;
@@ -90,18 +89,6 @@ public class UsersService {
 
         Users user = userOptional.get();
         return ResponseEntity.ok(user.getFavorites());
-    }
-
-    public ResponseEntity<?> updatePaymentDetails(String token, PaymentDetails paymentDetails) {
-        Optional<Users> userOptional = usersRepository.findByToken(token);
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
-
-        Users user = userOptional.get();
-        user.setPaymentDetails(paymentDetails);
-        usersRepository.save(user);
-        return ResponseEntity.ok("Payment details updated successfully");
     }
 
     public ResponseEntity<?> addPaymentHistory(String token, PaymentHistory paymentHistory) {

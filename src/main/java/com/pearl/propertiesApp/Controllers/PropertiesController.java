@@ -3,11 +3,12 @@ package com.pearl.propertiesApp.Controllers;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.PaymentExecution;
+import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import com.pearl.propertiesApp.DTOs.RequestDTO;
-import com.pearl.propertiesApp.Entities.PaymentDetails;
 import com.pearl.propertiesApp.Entities.PaymentHistory;
+import com.pearl.propertiesApp.Repositories.PaymentHistoryRepository;
 import com.pearl.propertiesApp.Services.PropertiesService;
 import com.pearl.propertiesApp.Services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @RestController
@@ -27,6 +30,9 @@ public class PropertiesController {
     private UsersService usersService;
     @Autowired
     private APIContext apiContext;
+
+    @Autowired
+    private PaymentHistoryRepository historyRepo;
 
     @PostMapping("/add")
     public ResponseEntity<?> addProperties(@RequestHeader("Authorization") String auth,
@@ -56,12 +62,6 @@ public class PropertiesController {
     public ResponseEntity<?> deleteProperty(@RequestHeader("Authorization") String auth,
                                             @PathVariable Long id) {
         return propertiesService.deleteProperty(auth.substring(7), id);
-    }
-
-    @PutMapping("/payment-details")
-    public ResponseEntity<?> updatePaymentDetails(@RequestHeader("Authorization") String auth,
-                                                  @ModelAttribute PaymentDetails paymentDetails) {
-        return usersService.updatePaymentDetails(auth.substring(7), paymentDetails);
     }
 
     @PostMapping("/payment-history")
@@ -103,7 +103,25 @@ public class PropertiesController {
 
         try {
             Payment executedPayment = payment.execute(apiContext, paymentExecution);
+
+            // Extract transaction info
+            Transaction transaction = executedPayment.getTransactions().getFirst();
+            Double amount = Double.parseDouble(transaction.getAmount().getTotal());
+            String method = executedPayment.getPayer().getPaymentMethod();
+            String state = executedPayment.getState();
+            String txnId = executedPayment.getId();
+
+            // Save history
+            PaymentHistory history = new PaymentHistory();
+            history.setAmount(amount);
+            history.setPaymentDate(LocalDateTime.now());
+            history.setPaymentMethod(method);
+            history.setStatus(state);
+            history.setTransactionId(txnId);
+            historyRepo.save(history);
+
             return ResponseEntity.ok(executedPayment);
+
         } catch (PayPalRESTException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

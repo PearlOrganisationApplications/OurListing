@@ -33,12 +33,6 @@ public class Users {
     private Boolean isVerified = false;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private PaymentDetails paymentDetails;
-
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Column(unique = false)
     @JoinColumn
