@@ -16,7 +16,7 @@ import java.security.SecureRandom;
 @Component
 public class FileUploadUtil {
 
-    private static final long MAX_FILE_SIZE = 25242880; // 5 MB in bytes
+    private static final long MAX_FILE_SIZE = 25242880; // 5 MB
     private static final String FILE_UPLOAD_PATH = "uploads";
     SecureRandom random = new SecureRandom();
     @Autowired
@@ -34,7 +34,7 @@ public class FileUploadUtil {
         File dir = new File(FILE_UPLOAD_PATH);
         if (!dir.exists()) {
             if (!dir.mkdirs()) {
-                log.warn("Error creating directories for " + (dir).toString());
+                log.warn("Error creating directories for {}", dir);
             }
         }
 

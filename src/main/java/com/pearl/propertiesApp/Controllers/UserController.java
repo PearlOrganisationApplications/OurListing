@@ -43,4 +43,9 @@ public class UserController {
         return usersService.getFavorites(auth.substring(7));
     }
 
+    @GetMapping("/payment/history")
+    public ResponseEntity<?> getPaymentHistory(@RequestHeader("Authorization") String auth) {
+        return usersService.getPaymentHistory(auth.substring(7));
+    }
+
 }

@@ -208,7 +208,7 @@ public class PropertiesService {
     }
 
 
-    public Payment getPayment(double sum) {
+    public Payment getPayment(double sum, Users user) {
         Amount amount = new Amount();
         amount.setCurrency("USD");
         amount.setTotal(String.format("%.2f", sum));
@@ -216,6 +216,7 @@ public class PropertiesService {
         Transaction transaction = new Transaction();
         transaction.setDescription("Payment description");
         transaction.setAmount(amount);
+        transaction.setCustom(String.valueOf(user.getId()));
 
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);
@@ -224,8 +225,8 @@ public class PropertiesService {
         payer.setPaymentMethod("paypal");
 
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:8080/api/paypal/cancel");
-        redirectUrls.setReturnUrl("http://localhost:8080/api/paypal/success");
+        redirectUrls.setCancelUrl("http://localhost:3132/api/pay/cancel");
+        redirectUrls.setReturnUrl("http://localhost:3123/api/pay/success");
 
         Payment payment = new Payment();
         payment.setIntent("sale");
