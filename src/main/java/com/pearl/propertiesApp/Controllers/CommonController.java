@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -109,25 +108,44 @@ public class CommonController {
         try {
             Payment executedPayment = payment.execute(apiContext, paymentExecution);
 
-            // Extract transaction info
+            // Validate state
+            if (!"approved".equalsIgnoreCase(executedPayment.getState())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment not approved.");
+            }
+
             Transaction transaction = executedPayment.getTransactions().getFirst();
+            String custom = transaction.getCustom();
+
+            if (custom == null || !custom.matches("\\d+")) {
+                return ResponseEntity.badRequest().body("Invalid user reference.");
+            }
+
+            Long userId = Long.valueOf(custom);
             Double amount = Double.parseDouble(transaction.getAmount().getTotal());
             String method = executedPayment.getPayer().getPaymentMethod();
-            String state = executedPayment.getState();
             String txnId = executedPayment.getId();
+            String state = executedPayment.getState();
 
-            Users user = usersService.getUsersById(Long.valueOf(transaction.getCustom()));
-            List<PaymentHistory> paymentHistoryList = user.getPaymentHistory();
-            // Save history
+            if (historyRepo.existsByTransactionId(txnId)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Payment already processed.");
+            }
+
+            Users user = usersService.getUsersById(userId);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+            }
+
+
             PaymentHistory history = new PaymentHistory();
             history.setAmount(amount);
             history.setPaymentDate(LocalDateTime.now());
             history.setPaymentMethod(method);
             history.setStatus(state);
             history.setTransactionId(txnId);
-            paymentHistoryList.add(history);
-            user.setPaymentHistory(paymentHistoryList);
+
+            user.getPaymentHistory().add(history);
             usersService.saveUser(user);
+
             Map<String, Object> response = new HashMap<>();
             response.put("amount", amount);
             response.put("transactionId", txnId);
@@ -138,8 +156,11 @@ public class CommonController {
 
         } catch (PayPalRESTException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid amount or user ID format.");
         }
     }
+
 
     @GetMapping("/pay/cancel")
     public ResponseEntity<?> cancelPay(@RequestParam("token") String token) {
