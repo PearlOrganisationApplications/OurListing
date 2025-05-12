@@ -10,6 +10,7 @@ import com.pearl.propertiesApp.Utilities.CloudinaryService;
 import com.pearl.propertiesApp.Utilities.FileStackService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class PropertiesService {
+    @Value("${baseurl.web}")
+    private String web;
+
     @Autowired
     private PropertiesRepository propertiesRepository;
 
@@ -225,8 +229,8 @@ public class PropertiesService {
         payer.setPaymentMethod("paypal");
 
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:3132/api/pay/cancel");
-        redirectUrls.setReturnUrl("http://localhost:3123/api/pay/success");
+        redirectUrls.setCancelUrl(web+"/api/pay/cancel");
+        redirectUrls.setReturnUrl(web+"/api/pay/success");
 
         Payment payment = new Payment();
         payment.setIntent("sale");
