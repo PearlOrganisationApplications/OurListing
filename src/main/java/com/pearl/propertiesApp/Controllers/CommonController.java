@@ -142,7 +142,12 @@ public class CommonController {
     }
 
     @GetMapping("/pay/cancel")
-    public ResponseEntity<String> cancelPay() {
-        return ResponseEntity.ok("Payment cancelled");
+    public ResponseEntity<?> cancelPay(@RequestParam("token") String token) {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "cancelled");
+        response.put("token", token);
+        response.put("message", "Payment was cancelled by the user.");
+        return ResponseEntity.ok(response);
     }
+
 }
