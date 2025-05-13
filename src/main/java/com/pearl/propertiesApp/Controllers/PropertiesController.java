@@ -4,6 +4,7 @@ import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import com.pearl.propertiesApp.Configurations.PaypalConfig;
 import com.pearl.propertiesApp.DTOs.RequestDTO;
 import com.pearl.propertiesApp.Entities.PaymentHistory;
 import com.pearl.propertiesApp.Services.PropertiesService;
@@ -30,7 +31,7 @@ public class PropertiesController {
     @Autowired
     private UsersService usersService;
     @Autowired
-    private APIContext apiContext;
+    private PaypalConfig paypalConfig;
 
     @PostMapping("/add")
     public ResponseEntity<?> addProperties(@RequestHeader("Authorization") String auth,
@@ -80,7 +81,8 @@ public class PropertiesController {
                 usersService.getUserByToken(auth.substring(7)));
 
         try {
-            Payment createdPayment = payment.create(apiContext);
+            APIContext freshContext = paypalConfig.getAPIContext();
+            Payment createdPayment = payment.create(freshContext);
             for (Links link : createdPayment.getLinks()) {
                 if (link.getRel().equals("approval_url")) {
                     return ResponseEntity.ok(Collections.singletonMap("redirect_url", link.getHref()));
