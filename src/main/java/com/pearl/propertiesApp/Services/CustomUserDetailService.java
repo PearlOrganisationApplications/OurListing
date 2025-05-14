@@ -30,7 +30,7 @@ public class CustomUserDetailService implements UserDetailsService {
             // In-memory admin user
             return User.withUsername("Pearl")
                     .password(passwordEncoder.encode("PearlProdChecker@12390"))
-                    .authorities("SUPER_ADMIN")
+                    .authorities("ADMIN")
                     .build();
         }
 
