@@ -15,11 +15,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
 import java.util.Optional;
 
 @Slf4j
 @Service
 public class CommonServices {
+    SecureRandom random = new SecureRandom();
+
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -33,6 +36,7 @@ public class CommonServices {
     public ResponseEntity<?> register(RequestDTO.registerRequestDTO request) throws MessagingException, UnsupportedEncodingException {
 
         Users user = usersRepository.findByEmail(request.getEmail()).orElse(new Users());
+        String otp = String.valueOf(random.nextInt(100000, 999999));
         Optional<Users> usersOptional = usersRepository.findByNumber(request.getNumber());
         if (usersOptional.isPresent()) {
             user = usersOptional.get();
@@ -46,8 +50,8 @@ public class CommonServices {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setName(request.getName());
         user.setNumber(request.getNumber());
-        log.info("OTP: " + request.getOtp());
-        user.setOtp(passwordEncoder.encode(request.getOtp()));
+        log.info("OTP: " + otp);
+        user.setOtp(passwordEncoder.encode(otp));
         user.setAddress(request.getAddress());
         user.setRole(Users.role.valueOf(request.getRole()));
         if (user.getRole().equals(Users.role.ADMIN)) throw new RuntimeException("Invalid Role");
@@ -75,11 +79,13 @@ public class CommonServices {
 
     public ResponseEntity<?> sendOTP(RequestDTO.registerRequestDTO request)
             throws MessagingException, UnsupportedEncodingException {
+        String otp = String.valueOf(random.nextInt(100000, 999999));
+
         Users user = usersRepository.findByEmail(request.getEmail()).orElseThrow(() ->
                 new RuntimeException("User not Found"));
-        user.setOtp(passwordEncoder.encode(request.getOtp()));
+        user.setOtp(passwordEncoder.encode(otp));
         emailService.sendMail(user.getEmail(),
-                MailTemplates.OTP(request.getOtp()),
+                MailTemplates.OTP(otp),
                 "Your OTP is for propertyAPP is " + request.getOtp(),
                 null);
         return ResponseEntity.ok(usersRepository.save(user));
