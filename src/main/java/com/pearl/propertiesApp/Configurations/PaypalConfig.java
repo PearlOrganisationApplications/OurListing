@@ -20,14 +20,14 @@ public class PaypalConfig {
     private String clientSecret;
 
     @Value("${paypal.mode}")
-    private String mode; // sandbox or live
+    private String mode;
 
     @Bean
     public OAuthTokenCredential authTokenCredential() {
         return new OAuthTokenCredential(clientId, clientSecret, sdkConfig());
     }
     public APIContext getAPIContext() {
-        return new APIContext(clientId, clientSecret, "sandbox"); // or "live"
+        return new APIContext(clientId, clientSecret, mode);
     }
 
     @Bean
