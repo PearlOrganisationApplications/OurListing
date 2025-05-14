@@ -62,6 +62,43 @@ public class CommonController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String auth) {
+        try {
+            return services.logout(auth.substring(7));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> verify(@RequestHeader("Authorization") String auth,
+                                    @ModelAttribute RequestDTO.registerRequestDTO request) {
+        try {
+            return services.verifyOTP(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@ModelAttribute RequestDTO.registerRequestDTO request) {
+        try {
+            return services.resetPassword(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
+    }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<?> sendOTP(@ModelAttribute RequestDTO.registerRequestDTO request) {
+        try {
+            return services.sendOTP(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         return usersService.getUseryById(id);

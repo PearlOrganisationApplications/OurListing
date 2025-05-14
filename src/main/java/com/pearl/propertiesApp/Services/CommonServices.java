@@ -3,15 +3,21 @@ package com.pearl.propertiesApp.Services;
 import com.pearl.propertiesApp.DTOs.RequestDTO;
 import com.pearl.propertiesApp.Entities.Users;
 import com.pearl.propertiesApp.Repositories.UsersRepository;
+import com.pearl.propertiesApp.Utilities.EmailService;
 import com.pearl.propertiesApp.Utilities.JwtTokenUtil;
+import com.pearl.propertiesApp.Utilities.MailTemplates;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class CommonServices {
     @Autowired
@@ -20,9 +26,11 @@ public class CommonServices {
     private UsersRepository usersRepository;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private EmailService emailService;
 
     @Transactional
-    public ResponseEntity<?> register(RequestDTO.registerRequestDTO request) {
+    public ResponseEntity<?> register(RequestDTO.registerRequestDTO request) throws MessagingException, UnsupportedEncodingException {
 
         Users user = usersRepository.findByEmail(request.getEmail()).orElse(new Users());
         Optional<Users> usersOptional = usersRepository.findByNumber(request.getNumber());
@@ -38,8 +46,15 @@ public class CommonServices {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setName(request.getName());
         user.setNumber(request.getNumber());
+        log.info("OTP: " + request.getOtp());
+        user.setOtp(passwordEncoder.encode(request.getOtp()));
         user.setAddress(request.getAddress());
         user.setRole(Users.role.valueOf(request.getRole()));
+        if (user.getRole().equals(Users.role.ADMIN)) throw new RuntimeException("Invalid Role");
+        emailService.sendMail(user.getEmail(),
+                MailTemplates.registrationEmail(user.getName(), request.getOtp()),
+                "Your OTP is for propertyAPP is " + request.getOtp(),
+                null);
         return ResponseEntity.ok(usersRepository.save(user));
     }
 
@@ -56,5 +71,48 @@ public class CommonServices {
         Users user = usersRepository.findByToken(substring)
                 .orElseThrow(() -> new RuntimeException("Session Expired"));
         return ResponseEntity.ok(user);
+    }
+
+    public ResponseEntity<?> sendOTP(RequestDTO.registerRequestDTO request)
+            throws MessagingException, UnsupportedEncodingException {
+        Users user = usersRepository.findByEmail(request.getEmail()).orElseThrow(() ->
+                new RuntimeException("User not Found"));
+        user.setOtp(passwordEncoder.encode(request.getOtp()));
+        emailService.sendMail(user.getEmail(),
+                MailTemplates.OTP(request.getOtp()),
+                "Your OTP is for propertyAPP is " + request.getOtp(),
+                null);
+        return ResponseEntity.ok(usersRepository.save(user));
+    }
+
+    public ResponseEntity<?> resetPassword(RequestDTO.registerRequestDTO request) throws MessagingException, UnsupportedEncodingException {
+        Users user = usersRepository.findByEmail(request.getEmail()).orElseThrow(() ->
+                new RuntimeException("User not Found"));
+        if (passwordEncoder.matches(request.getOtp(), user.getOtp())) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setOtp(null);
+        }
+        emailService.sendMail(user.getEmail(),
+                MailTemplates.passwordReset(),
+                "Your Password has been reset successfully",
+                null);
+        return ResponseEntity.ok(usersRepository.save(user));
+    }
+
+    public ResponseEntity<?> logout(String substring) {
+        Users user = usersRepository.findByToken(substring)
+                .orElseThrow(() -> new RuntimeException("Session Expired"));
+        user.setToken(null);
+        usersRepository.save(user);
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
+    public ResponseEntity<?> verifyOTP(RequestDTO.registerRequestDTO request) {
+        Users user = usersRepository.findByEmail(request.getEmail()).orElse(new Users());
+        if (passwordEncoder.matches(request.getOtp(), user.getOtp())) {
+            user.setIsVerified(true);
+            user.setOtp(null);
+            return ResponseEntity.ok(usersRepository.save(user));
+        } else return ResponseEntity.badRequest().body("Invalid OTP");
     }
 }

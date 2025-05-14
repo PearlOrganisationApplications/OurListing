@@ -28,6 +28,7 @@ public class Users {
 
     private String address;
     private String token;
+    private String otp;
 
     @JsonIgnore
     private Boolean isVerified = false;
