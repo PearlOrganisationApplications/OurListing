@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Chat</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
-<input type="text" id="Bearer" placeholder="Token">
+<input id="Bearer" placeholder="Token" type="text">
 <button onclick="connect()">Connect</button>
 
-<input type="text" id="recipient" placeholder="Recipient Username">
-<input type="text" id="message" placeholder="Message">
+<input id="recipient" placeholder="Recipient Username" type="text">
+<input id="message" placeholder="Message" type="text">
 <button onclick="sendMessage()">Send</button>
 
 <div id="chatArea"></div>
@@ -46,7 +46,7 @@
             return;
         }
 
-        const chatMessage = { sender: 'yourUsername', recipient: recipient, content: content }; // Replace 'yourUsername' with the actual sender's username
+        const chatMessage = { sender: 'yourUsername', recipient: recipient, content: content };
         stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
 
         // Clear the message input

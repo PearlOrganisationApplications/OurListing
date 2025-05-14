@@ -73,7 +73,7 @@ public class SecurityConfig {
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration(CorsFilter corsFilter) {
         FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>(corsFilter);
-        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE); // Ensure this runs first
+        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registrationBean;
     }
 
