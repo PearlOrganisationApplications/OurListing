@@ -56,8 +56,8 @@ public class CommonServices {
         user.setRole(Users.role.valueOf(request.getRole()));
         if (user.getRole().equals(Users.role.ADMIN)) throw new RuntimeException("Invalid Role");
         emailService.sendMail(user.getEmail(),
-                MailTemplates.registrationEmail(user.getName(), request.getOtp()),
-                "Your OTP is for propertyAPP is " + request.getOtp(),
+                MailTemplates.registrationEmail(user.getName(), otp),
+                "Your OTP is for propertyAPP is " + otp,
                 null);
         return ResponseEntity.ok(usersRepository.save(user));
     }
@@ -86,7 +86,7 @@ public class CommonServices {
         user.setOtp(passwordEncoder.encode(otp));
         emailService.sendMail(user.getEmail(),
                 MailTemplates.OTP(otp),
-                "Your OTP is for propertyAPP is " + request.getOtp(),
+                "Your OTP is for propertyAPP is " + otp,
                 null);
         return ResponseEntity.ok(usersRepository.save(user));
     }

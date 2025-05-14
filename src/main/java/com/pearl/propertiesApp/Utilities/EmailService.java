@@ -5,18 +5,14 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
-import java.util.concurrent.Executor;
 
 import static javax.print.attribute.standard.Severity.ERROR;
 
@@ -34,10 +30,10 @@ public class EmailService {
             throws MessagingException, UnsupportedEncodingException {
 
         try {
-            String senderName = "DIGI-IMMO";
+            String senderName = "Property APP";
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
-            messageHelper.setFrom("no-reply@digiimmo.in", senderName);
+            messageHelper.setFrom("no-reply@propertyapp.in", senderName);
             messageHelper.setTo(toEmail);
             messageHelper.setSubject(subject);
             if (file != null) messageHelper.addAttachment("Invoice.pdf", file);
