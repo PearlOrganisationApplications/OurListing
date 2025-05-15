@@ -1,8 +1,10 @@
 package com.pearl.propertiesApp.Services;
 
 import com.pearl.propertiesApp.DTOs.RequestDTO;
+import com.pearl.propertiesApp.Entities.Plans;
 import com.pearl.propertiesApp.Entities.Users;
 import com.pearl.propertiesApp.Repositories.PaymentHistoryRepository;
+import com.pearl.propertiesApp.Repositories.PlansRepository;
 import com.pearl.propertiesApp.Repositories.PropertiesRepository;
 import com.pearl.propertiesApp.Repositories.UsersRepository;
 import com.pearl.propertiesApp.Utilities.JwtTokenUtil;
@@ -24,6 +26,8 @@ public class AdminService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private PlansRepository plansRepository;
 
     public ResponseEntity<?> register(RequestDTO.registerRequestDTO request) {
         Users user = new Users();
@@ -106,5 +110,15 @@ public class AdminService {
             return ResponseEntity.badRequest().body("Invalid Credentials");
         }
         return ResponseEntity.ok(user);
+    }
+
+    public ResponseEntity<?> addPlan(RequestDTO.planRequest request) {
+        Plans plan = new Plans();
+        plan.setPlanName(request.getPlanName());
+        plan.setAmount(request.getAmount());
+        plan.setEnabled(true);
+        plan.setDescription(request.getDescription());
+        plan.setFeatures(request.getFeatures());
+        return ResponseEntity.ok(plansRepository.save(plan));
     }
 }

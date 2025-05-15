@@ -32,6 +32,11 @@ public class AdminController {
         return adminService.logout(auth.substring(7));
     }
 
+    @PostMapping("/addPlan")
+    public ResponseEntity<?> addPlan(@ModelAttribute RequestDTO.planRequest request) {
+        return adminService.addPlan(request);
+    }
+
     @GetMapping("/users")
     public ResponseEntity<?> getUsers() {
         return adminService.getAllUsers();
@@ -57,6 +62,7 @@ public class AdminController {
     public ResponseEntity<?> deleteProperty(@PathVariable Long Id) {
         return adminService.deleteProperty(Id);
     }
+
 
 
 }

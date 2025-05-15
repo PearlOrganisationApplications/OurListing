@@ -16,7 +16,10 @@ public class Properties {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+
+    @Column(unique = true)
     private String title;
+
     private String info;
 
     @JsonManagedReference

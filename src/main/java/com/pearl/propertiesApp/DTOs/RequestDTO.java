@@ -1,5 +1,6 @@
 package com.pearl.propertiesApp.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,5 +57,18 @@ public class RequestDTO {
         private String name;
         private String number;
         private String address;
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @Data
+    public static class planRequest {
+        private Double amount;
+        private String planName;
+        private String photo;
+        private String description;
+        private List<String> features;
+        private Boolean enabled;
+        private Integer duration;
+
     }
 }

@@ -7,6 +7,8 @@ import com.paypal.base.rest.PayPalRESTException;
 import com.pearl.propertiesApp.Configurations.PaypalConfig;
 import com.pearl.propertiesApp.DTOs.RequestDTO;
 import com.pearl.propertiesApp.Entities.PaymentHistory;
+import com.pearl.propertiesApp.Entities.Plans;
+import com.pearl.propertiesApp.Repositories.PlansRepository;
 import com.pearl.propertiesApp.Services.PropertiesService;
 import com.pearl.propertiesApp.Services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,22 +18,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/properties")
 public class PropertiesController {
-    Map<String, Double> plans = new HashMap<>(Map.of(
-            "A", 500.00,
-            "B", 1000.00,
-            "C", 1500.00)
-    );
+
     @Autowired
     private PropertiesService propertiesService;
     @Autowired
     private UsersService usersService;
     @Autowired
     private PaypalConfig paypalConfig;
+    @Autowired
+    private PlansRepository plansRepository;
 
     @PostMapping("/add")
     public ResponseEntity<?> addProperties(@RequestHeader("Authorization") String auth,
@@ -74,9 +76,25 @@ public class PropertiesController {
         return usersService.getPaymentHistory(auth.substring(7));
     }
 
+    @GetMapping("/plans")
+    public ResponseEntity<?> getPlans() {
+        return ResponseEntity.ok(plansRepository.findAllByEnabledTrue());
+    }
+
     @PostMapping("/pay")
     public ResponseEntity<?> createPayment(@RequestParam("plan") String plan,
                                            @RequestHeader("Authorization") String auth) {
+        List<Plans> allPlans = plansRepository.findAllByEnabledTrue();
+        Map<String, Double> plans = allPlans.stream()
+                .collect(Collectors.toMap(Plans::getPlanName, Plans::getAmount));
+        if (plans.isEmpty()) {
+            plans = new HashMap<>(Map.of(
+                    "A", 500.00,
+                    "B", 1000.00,
+                    "C", 1500.00
+            ));
+        }
+
         Payment payment = propertiesService.getPayment(plans.get(plan),
                 usersService.getUserByToken(auth.substring(7)));
 
