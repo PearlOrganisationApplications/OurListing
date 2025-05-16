@@ -33,18 +33,16 @@ public class CommonServices {
     private EmailService emailService;
 
     @Transactional
-    public ResponseEntity<?> register(RequestDTO.registerRequestDTO request) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<?> register(RequestDTO.registerRequestDTO request)
+            throws MessagingException, UnsupportedEncodingException {
 
         Users user = usersRepository.findByEmail(request.getEmail()).orElse(new Users());
-        String otp = String.valueOf(random.nextInt(100000, 999999));
-        Optional<Users> usersOptional = usersRepository.findByNumber(request.getNumber());
-        if (usersOptional.isPresent()) {
-            user = usersOptional.get();
-            if (user.getIsVerified()) return ResponseEntity.badRequest()
-                    .body("Phone Number is Registered to Another User");
-        }
-
         if (user.getIsVerified()) return ResponseEntity.badRequest().body("User Already Exists");
+        Optional<Users> usersOptional = usersRepository.findByNumber(request.getNumber());
+        if (usersOptional.isPresent() && usersOptional.get().getIsVerified())
+            return ResponseEntity.badRequest().body("Phone Number is Registered to Another User");
+
+        String otp = String.valueOf(random.nextInt(100000, 999999));
 
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -55,16 +53,19 @@ public class CommonServices {
         user.setToken(jwtTokenUtil.generateToken(user.getEmail(), String.valueOf(user.getRole())));
         user.setAddress(request.getAddress());
         user.setRole(Users.role.valueOf(request.getRole()));
+
         if (user.getRole().equals(Users.role.ADMIN)) throw new RuntimeException("Invalid Role");
+
 //        emailService.sendMail(user.getEmail(),
 //                MailTemplates.registrationEmail(user.getName(), otp),
 //                "Your OTP is for propertyAPP is " + otp,
 //                null);
+
         return ResponseEntity.ok(usersRepository.save(user));
     }
 
     public ResponseEntity<?> login(RequestDTO.loginRequestDTO request) {
-        Users user = usersRepository.findByEmail(request.getEmail()).orElse(new Users());
+        Users user = usersRepository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not Found"));
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             user.setToken(jwtTokenUtil.generateToken(user.getEmail(),
                     String.valueOf(user.getRole())));
