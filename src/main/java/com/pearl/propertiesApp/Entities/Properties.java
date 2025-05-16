@@ -3,14 +3,16 @@ package com.pearl.propertiesApp.Entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 import java.util.Map;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Properties {
     @Id
@@ -49,13 +51,13 @@ public class Properties {
     private type propertyType;
 
     @ElementCollection
-    private Map<String,Integer> features;
+    private Map<String, Integer> features;
 
-    public enum listType{
-        Rent,Sale,Lease
+    public enum listType {
+        Rent, Sale, Lease
     }
 
-    public enum type{
-        Apartment,Villa,Plot
+    public enum type {
+        Apartment, Villa, Plot
     }
 }

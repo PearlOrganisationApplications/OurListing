@@ -65,7 +65,8 @@ public class CommonServices {
     }
 
     public ResponseEntity<?> login(RequestDTO.loginRequestDTO request) {
-        Users user = usersRepository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not Found"));
+        Users user = usersRepository.findByEmail(request.getEmail()).orElseThrow(() ->
+                new RuntimeException("User not Found"));
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             user.setToken(jwtTokenUtil.generateToken(user.getEmail(),
                     String.valueOf(user.getRole())));

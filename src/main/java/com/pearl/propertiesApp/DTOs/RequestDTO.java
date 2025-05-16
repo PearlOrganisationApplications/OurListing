@@ -1,8 +1,8 @@
 package com.pearl.propertiesApp.DTOs;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -10,7 +10,8 @@ import java.util.Map;
 
 public class RequestDTO {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @Data
+    @Getter
+    @Setter
     public static class registerRequestDTO {
         private String email;
         private String password;
@@ -22,7 +23,8 @@ public class RequestDTO {
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @Data
+    @Getter
+    @Setter
     public static class loginRequestDTO {
         private String email;
         private String password;
@@ -30,7 +32,8 @@ public class RequestDTO {
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @Data
+    @Getter
+    @Setter
     public static class propertyRequest {
         private String title;
         private String info;
@@ -52,7 +55,8 @@ public class RequestDTO {
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @Data
+    @Getter
+    @Setter
     public static class updateUserRequest {
         private String name;
         private String number;
@@ -60,7 +64,8 @@ public class RequestDTO {
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @Data
+    @Getter
+    @Setter
     public static class planRequest {
         private Double amount;
         private String planName;
