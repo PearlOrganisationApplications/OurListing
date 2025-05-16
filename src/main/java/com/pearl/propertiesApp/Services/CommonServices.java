@@ -52,13 +52,14 @@ public class CommonServices {
         user.setNumber(request.getNumber());
         log.info("OTP: " + otp);
         user.setOtp(passwordEncoder.encode(otp));
+        user.setToken(jwtTokenUtil.generateToken(user.getEmail(), String.valueOf(user.getRole())));
         user.setAddress(request.getAddress());
         user.setRole(Users.role.valueOf(request.getRole()));
         if (user.getRole().equals(Users.role.ADMIN)) throw new RuntimeException("Invalid Role");
-        emailService.sendMail(user.getEmail(),
-                MailTemplates.registrationEmail(user.getName(), otp),
-                "Your OTP is for propertyAPP is " + otp,
-                null);
+//        emailService.sendMail(user.getEmail(),
+//                MailTemplates.registrationEmail(user.getName(), otp),
+//                "Your OTP is for propertyAPP is " + otp,
+//                null);
         return ResponseEntity.ok(usersRepository.save(user));
     }
 

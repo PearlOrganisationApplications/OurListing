@@ -28,6 +28,7 @@ public class Users {
 
     private String address;
     private String token;
+    @JsonIgnore
     private String otp;
 
     @JsonIgnore
