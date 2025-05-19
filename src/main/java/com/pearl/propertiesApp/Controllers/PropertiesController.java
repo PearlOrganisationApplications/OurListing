@@ -11,6 +11,7 @@ import com.pearl.propertiesApp.Entities.Plans;
 import com.pearl.propertiesApp.Repositories.PlansRepository;
 import com.pearl.propertiesApp.Services.PropertiesService;
 import com.pearl.propertiesApp.Services.UsersService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/properties")
 public class PropertiesController {
@@ -39,6 +41,7 @@ public class PropertiesController {
     @PostMapping("/add")
     public ResponseEntity<?> addProperties(@RequestHeader("Authorization") String auth,
                                            @ModelAttribute RequestDTO.propertyRequest request) throws IOException {
+        log.info("request data :{}", request);
         return propertiesService.addProperty(auth.substring(7), request);
     }
 
