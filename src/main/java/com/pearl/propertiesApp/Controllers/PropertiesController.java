@@ -41,7 +41,7 @@ public class PropertiesController {
     @PostMapping("/add")
     public ResponseEntity<?> addProperties(@RequestHeader("Authorization") String auth,
                                            @ModelAttribute RequestDTO.propertyRequest request) throws IOException {
-        log.info("request data :{}", request);
+        log.info("request data :{}", request.toString());
         return propertiesService.addProperty(auth.substring(7), request);
     }
 
