@@ -1,6 +1,7 @@
 package com.pearl.propertiesApp.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,8 +33,7 @@ public class RequestDTO {
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @Getter
-    @Setter
+    @Data
     public static class propertyRequest {
         private String title;
         private String info;
