@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,7 @@ public class PropertiesController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addProperties(@RequestHeader("Authorization") String auth,
-                                           @ModelAttribute RequestDTO.propertyRequest request) {
+                                           @ModelAttribute RequestDTO.propertyRequest request) throws IOException {
         return propertiesService.addProperty(auth.substring(7), request);
     }
 
