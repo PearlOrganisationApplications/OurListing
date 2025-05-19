@@ -42,6 +42,8 @@ public class PropertiesService {
 
     public ResponseEntity<?> addProperty(String token, RequestDTO.propertyRequest request) throws IOException {
 //        try {
+
+        log.info("request data :{}", request);
         Optional<Users> userOptional = usersRepository.findByToken(token);
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
