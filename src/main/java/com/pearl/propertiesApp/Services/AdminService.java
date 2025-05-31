@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -117,7 +118,7 @@ public class AdminService {
         return ResponseEntity.ok(user);
     }
 
-    public ResponseEntity<?> addPlan(RequestDTO.planRequest request) {
+    public ResponseEntity<?> addPlan(RequestDTO.planRequest request) throws IOException {
         Plans plan = new Plans();
         plan.setPlanName(request.getPlanName());
         plan.setAmount(request.getAmount());

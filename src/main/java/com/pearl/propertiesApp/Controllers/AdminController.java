@@ -6,14 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
     @PostMapping("/create")
-    public ResponseEntity<?> createAdmin(RequestDTO .registerRequestDTO request) {
+    public ResponseEntity<?> createAdmin(RequestDTO.registerRequestDTO request) {
         return adminService.register(request);
     }
 
@@ -33,7 +36,7 @@ public class AdminController {
     }
 
     @PostMapping("/addPlan")
-    public ResponseEntity<?> addPlan(@ModelAttribute RequestDTO.planRequest request) {
+    public ResponseEntity<?> addPlan(@ModelAttribute RequestDTO.planRequest request) throws IOException {
         return adminService.addPlan(request);
     }
 
@@ -41,14 +44,17 @@ public class AdminController {
     public ResponseEntity<?> getUsers() {
         return adminService.getAllUsers();
     }
+
     @GetMapping("/users/verify/{Id}")
     public ResponseEntity<?> getUser(@PathVariable Long Id) {
         return adminService.verifyUser(Id);
     }
+
     @GetMapping("/properties")
     public ResponseEntity<?> getProperties() {
         return adminService.getAllProperties();
     }
+
     @GetMapping("/payment-history")
     public ResponseEntity<?> getPaymentHistory() {
         return adminService.getAllPaymentHistory();
@@ -58,11 +64,11 @@ public class AdminController {
     public ResponseEntity<?> deleteUser(@PathVariable Long Id) {
         return adminService.deleteUser(Id);
     }
+
     @DeleteMapping("/properties/{Id}")
     public ResponseEntity<?> deleteProperty(@PathVariable Long Id) {
         return adminService.deleteProperty(Id);
     }
-
 
 
 }
