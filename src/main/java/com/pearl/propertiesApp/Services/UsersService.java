@@ -115,19 +115,16 @@ public class UsersService {
         return ResponseEntity.ok(user.getPaymentHistory());
     }
 
-    public ResponseEntity<?> getUseryById(Long id) {
-        return ResponseEntity.ok(usersRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("User not found")));
-    }
-
     public Users getUserByToken(String substring) {
         return usersRepository.findByToken(substring).orElseThrow(() ->
                 new RuntimeException("User not Found"));
     }
 
     public Users getUsersById(Long aLong) {
-        return usersRepository.findById(aLong).orElseThrow(() ->
+        Users users = usersRepository.findById(aLong).orElseThrow(() ->
                 new RuntimeException("User not Found"));
+        users.setToken(null);
+        return users;
     }
 
     public void saveUser(Users user) {
