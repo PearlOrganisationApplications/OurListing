@@ -2,6 +2,7 @@ package com.pearl.propertiesApp.Services;
 
 import com.paypal.api.payments.*;
 import com.pearl.propertiesApp.DTOs.RequestDTO;
+import com.pearl.propertiesApp.Entities.PaymentHistory;
 import com.pearl.propertiesApp.Entities.Properties;
 import com.pearl.propertiesApp.Entities.Users;
 import com.pearl.propertiesApp.Repositories.PropertiesRepository;
@@ -16,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,59 +41,70 @@ public class PropertiesService {
     @Autowired
     private FileStackService fileStackService;
 
-    public ResponseEntity<?> addProperty(String token, RequestDTO.propertyRequest request) throws IOException {
-//        try {
-
-
-        Optional<Users> userOptional = usersRepository.findByToken(token);
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
-
-        Users user = userOptional.get();
-
-        Properties property = new Properties();
-        property.setTitle(request.getTitle());
-        property.setInfo(request.getInfo());
-        property.setUser(user);
-        property.setListingType(Properties.listType.valueOf(request.getListingType()));
-        property.setPrice(request.getPrice());
-        property.setLocation(request.getLocation());
-        property.setLandArea(request.getLandArea());
-        property.setLatitude(request.getLatitude());
-        property.setLongitude(request.getLongitude());
-
-        List<String> photoList = new ArrayList<>();
-        if (request.getPhotos() != null && !request.getPhotos().isEmpty()) {
-            for (MultipartFile photo : request.getPhotos()) {
-                String uid = String.valueOf(UUID.randomUUID());
-                cloudinaryService.uploadFile(photo, uid);
-                photoList.add(cloudinaryService.getPhotoUrl(uid));
+    public ResponseEntity<?> addProperty(String token, RequestDTO.propertyRequest request) {
+        try {
+            Optional<Users> userOptional = usersRepository.findByToken(token);
+            if (userOptional.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
             }
-        } else {
-            return ResponseEntity.badRequest().body("Photos not Found");
-        }
-        property.setPhotos(photoList);
 
-        List<String> documentList = new ArrayList<>();
-        if (request.getDocuments() != null && !request.getDocuments().isEmpty()) {
-            for (MultipartFile document : request.getDocuments()) {
-                documentList.add(fileStackService.uploadFile(document));
+            Users user = userOptional.get();
+            if (!user.getPaymentHistory().isEmpty()) {
+                PaymentHistory history = user.getPaymentHistory()
+                        .stream()
+                        .filter(p ->
+                                p.getStatus().equals("approved"))
+                        .toList()
+                        .getLast();
+                if (history == null)
+                    return ResponseEntity.badRequest()
+                            .body("Need to Purchase a plan before continuing");
+                if (history.getPaymentDate().compareTo(LocalDateTime.now()) > 30)
+                    return ResponseEntity.badRequest()
+                            .body("Subscription Expired");
             }
-        } else {
-            return ResponseEntity.badRequest().body("Documents not Found");
+            Properties property = new Properties();
+            property.setTitle(request.getTitle());
+            property.setInfo(request.getInfo());
+            property.setUser(user);
+            property.setListingType(Properties.listType.valueOf(request.getListingType()));
+            property.setPrice(request.getPrice());
+            property.setLocation(request.getLocation());
+            property.setLandArea(request.getLandArea());
+            property.setLatitude(request.getLatitude());
+            property.setLongitude(request.getLongitude());
+
+            List<String> photoList = new ArrayList<>();
+            if (request.getPhotos() != null && !request.getPhotos().isEmpty()) {
+                for (MultipartFile photo : request.getPhotos()) {
+                    String uid = String.valueOf(UUID.randomUUID());
+                    cloudinaryService.uploadFile(photo, uid);
+                    photoList.add(cloudinaryService.getPhotoUrl(uid));
+                }
+            } else {
+                return ResponseEntity.badRequest().body("Photos not Found");
+            }
+            property.setPhotos(photoList);
+
+            List<String> documentList = new ArrayList<>();
+            if (request.getDocuments() != null && !request.getDocuments().isEmpty()) {
+                for (MultipartFile document : request.getDocuments()) {
+                    documentList.add(fileStackService.uploadFile(document));
+                }
+            } else {
+                return ResponseEntity.badRequest().body("Documents not Found");
+            }
+            property.setDocuments(documentList);
+
+            property.setPropertyType(Properties.type.valueOf(request.getPropertyType()));
+            property.setFeatures(request.getFeatures());
+
+            Properties savedProperty = propertiesRepository.save(property);
+            return ResponseEntity.ok(savedProperty);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error adding property: " + e.getMessage());
         }
-        property.setDocuments(documentList);
-
-        property.setPropertyType(Properties.type.valueOf(request.getPropertyType()));
-        property.setFeatures(request.getFeatures());
-
-        Properties savedProperty = propertiesRepository.save(property);
-        return ResponseEntity.ok(savedProperty);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body("Error adding property: " + e.getMessage());
-//        }
     }
 
     public ResponseEntity<?> getProperties(String token) {

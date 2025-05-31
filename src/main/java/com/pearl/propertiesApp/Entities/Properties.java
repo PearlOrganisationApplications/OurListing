@@ -1,6 +1,7 @@
 package com.pearl.propertiesApp.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Entity
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Properties {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

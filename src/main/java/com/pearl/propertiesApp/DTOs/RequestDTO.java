@@ -69,7 +69,7 @@ public class RequestDTO {
     public static class planRequest {
         private Double amount;
         private String planName;
-        private String photo;
+        private MultipartFile photo;
         private String description;
         private List<String> features;
         private Boolean enabled;

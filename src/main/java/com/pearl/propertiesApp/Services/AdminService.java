@@ -7,11 +7,14 @@ import com.pearl.propertiesApp.Repositories.PaymentHistoryRepository;
 import com.pearl.propertiesApp.Repositories.PlansRepository;
 import com.pearl.propertiesApp.Repositories.PropertiesRepository;
 import com.pearl.propertiesApp.Repositories.UsersRepository;
+import com.pearl.propertiesApp.Utilities.CloudinaryService;
 import com.pearl.propertiesApp.Utilities.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class AdminService {
@@ -28,6 +31,8 @@ public class AdminService {
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private PlansRepository plansRepository;
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     public ResponseEntity<?> register(RequestDTO.registerRequestDTO request) {
         Users user = new Users();
@@ -117,6 +122,12 @@ public class AdminService {
         plan.setPlanName(request.getPlanName());
         plan.setAmount(request.getAmount());
         plan.setEnabled(true);
+        plan.setDuration(request.getDuration());
+        if(request.getPhoto()!=null) {
+            String id= UUID.randomUUID().toString();
+            cloudinaryService.uploadFile(request.getPhoto(), id);
+            plan.setPhoto(cloudinaryService.getPhotoUrl(id));
+        }
         plan.setDescription(request.getDescription());
         plan.setFeatures(request.getFeatures());
         return ResponseEntity.ok(plansRepository.save(plan));
