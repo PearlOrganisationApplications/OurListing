@@ -133,6 +133,14 @@ public class CommonController {
         return propertiesService.getPropertyById(Id);
     }
 
+    @GetMapping("/properties/nearby")
+    public ResponseEntity<?> getProperties(@RequestParam("latitude") Double lat,
+                                           @RequestParam("longitude") Double longi,
+                                           @RequestParam("radius") Double rad) {
+        return propertiesService.getPropertyByRadius(lat, longi, rad);
+    }
+
+
     @GetMapping("/pay/success")
     public ResponseEntity<?> successPay(@RequestParam("paymentId") String paymentId,
                                         @RequestParam("PayerID") String payerId) {

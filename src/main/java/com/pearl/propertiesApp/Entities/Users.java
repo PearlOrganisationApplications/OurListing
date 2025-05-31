@@ -38,11 +38,11 @@ public class Users {
     @JsonIgnore
     private Boolean isVerified = false;
 
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Column(unique = false)
-    @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn
+    @JsonIgnore
     private List<PaymentHistory> paymentHistory;
 
 
