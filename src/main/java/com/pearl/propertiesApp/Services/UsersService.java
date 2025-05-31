@@ -69,6 +69,8 @@ public class UsersService {
         );
 
         Users user = userOptional.get();
+        if (property.getUser().equals(user))
+            return ResponseEntity.badRequest().body("Cannot Add own property to Favorites");
         List<Properties> favorites = user.getFavorites();
         if (!favorites.contains(property)) {
             favorites.add(property);

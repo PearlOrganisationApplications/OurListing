@@ -27,7 +27,6 @@ public class Properties {
     private String info;
 
     @JsonManagedReference
-    @JsonIgnore
     @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Users user;
