@@ -1,6 +1,7 @@
 package com.pearl.propertiesApp.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -29,6 +30,7 @@ public class Properties {
     @JsonManagedReference
     @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnoreProperties({"token", "favorites"})
     private Users user;
 
     @Enumerated(EnumType.STRING)
