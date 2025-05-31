@@ -71,8 +71,7 @@ public class AdminService {
         Users user = usersRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("User not Found"));
         user.setIsVerified(!user.getIsVerified());
-        usersRepository.save(user);
-        return ResponseEntity.ok("User verified successfully");
+        return ResponseEntity.ok(usersRepository.save(user));
     }
 
     public ResponseEntity<?> getAllProperties() {
@@ -124,8 +123,8 @@ public class AdminService {
         plan.setAmount(request.getAmount());
         plan.setEnabled(true);
         plan.setDuration(request.getDuration());
-        if(request.getPhoto()!=null) {
-            String id= UUID.randomUUID().toString();
+        if (request.getPhoto() != null) {
+            String id = UUID.randomUUID().toString();
             cloudinaryService.uploadFile(request.getPhoto(), id);
             plan.setPhoto(cloudinaryService.getPhotoUrl(id));
         }
