@@ -1,6 +1,5 @@
 package com.pearl.propertiesApp.Entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +24,6 @@ public class Plans {
     private String photo;
     private String description;
     private List<String> features;
-    @JsonIgnore
     private Boolean enabled;
     private Integer duration;
 
