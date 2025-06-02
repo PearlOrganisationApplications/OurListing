@@ -42,7 +42,6 @@ public class Users {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn
-    @JsonIgnore
     private List<PaymentHistory> paymentHistory;
 
 

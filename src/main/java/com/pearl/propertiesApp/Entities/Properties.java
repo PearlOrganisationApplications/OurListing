@@ -30,7 +30,7 @@ public class Properties {
     @JsonManagedReference
     @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnoreProperties({"token", "favorites"})
+    @JsonIgnoreProperties({"token", "favorites","paymentHistory"})
     private Users user;
 
     @Enumerated(EnumType.STRING)
