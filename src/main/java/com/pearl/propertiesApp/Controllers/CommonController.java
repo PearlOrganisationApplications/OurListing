@@ -7,8 +7,11 @@ import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import com.pearl.propertiesApp.DTOs.RequestDTO;
 import com.pearl.propertiesApp.Entities.PaymentHistory;
+import com.pearl.propertiesApp.Entities.Plans;
+import com.pearl.propertiesApp.Entities.PurchasedPlans;
 import com.pearl.propertiesApp.Entities.Users;
 import com.pearl.propertiesApp.Repositories.PaymentHistoryRepository;
+import com.pearl.propertiesApp.Repositories.PlansRepository;
 import com.pearl.propertiesApp.Services.CommonServices;
 import com.pearl.propertiesApp.Services.PropertiesService;
 import com.pearl.propertiesApp.Services.UsersService;
@@ -18,7 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,6 +39,8 @@ public class CommonController {
     private APIContext apiContext;
     @Autowired
     private PaymentHistoryRepository historyRepo;
+    @Autowired
+    private PlansRepository plansRepository;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@ModelAttribute RequestDTO.registerRequestDTO request) {
@@ -188,7 +195,20 @@ public class CommonController {
             history.setStatus(state);
             history.setTransactionId(txnId);
 
+
+            //Add Plan Tracking
+            List<PurchasedPlans> plans = user.getPurchasedPlans() != null ? user.getPurchasedPlans() : new ArrayList<>();
+            PurchasedPlans purchasedPlans = new PurchasedPlans();
+            Plans userPlan = plansRepository.findByamount(amount);
+
+            purchasedPlans.setPlan(userPlan);
+            purchasedPlans.setStartDate(plans.getLast().getEndDate() != null ? plans.getLast().getEndDate().plusDays(1) : LocalDateTime.now());
+            purchasedPlans.setEndDate(purchasedPlans.getStartDate().plusDays(userPlan.getDuration()));
+            purchasedPlans.setCurrent(LocalDateTime.now().isAfter(purchasedPlans.getStartDate()));
+            plans.add(purchasedPlans);
+            //SAVE URSELF
             user.getPaymentHistory().add(history);
+            user.setPurchasedPlans(plans);
             usersService.saveUser(user);
 
             Map<String, Object> response = new HashMap<>();

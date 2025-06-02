@@ -44,6 +44,11 @@ public class Users {
     @JoinColumn
     private List<PaymentHistory> paymentHistory;
 
+    @Column(unique = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn
+    private List<PurchasedPlans> purchasedPlans;
 
     @JsonIgnore
     @ElementCollection
