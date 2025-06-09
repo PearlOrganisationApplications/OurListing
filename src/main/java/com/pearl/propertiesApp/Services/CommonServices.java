@@ -80,19 +80,7 @@ public class CommonServices {
         return ResponseEntity.ok(user);
     }
 
-    public ResponseEntity<?> sendOTP(RequestDTO.registerRequestDTO request)
-            throws MessagingException, UnsupportedEncodingException {
-        String otp = String.valueOf(random.nextInt(100000, 999999));
 
-        Users user = usersRepository.findByEmail(request.getEmail()).orElseThrow(() ->
-                new RuntimeException("User not Found"));
-        user.setOtp(passwordEncoder.encode(otp));
-        emailService.sendMail(user.getEmail(),
-                MailTemplates.OTP(otp),
-                "Your OTP is for propertyAPP is " + otp,
-                null);
-        return ResponseEntity.ok(usersRepository.save(user));
-    }
 
     public ResponseEntity<?> resetPassword(RequestDTO.registerRequestDTO request) throws MessagingException, UnsupportedEncodingException {
         Users user = usersRepository.findByEmail(request.getEmail()).orElseThrow(() ->
@@ -116,6 +104,20 @@ public class CommonServices {
         return ResponseEntity.ok("Logged out successfully");
     }
 
+
+    public ResponseEntity<?> sendOTP(RequestDTO.registerRequestDTO request)
+            throws MessagingException, UnsupportedEncodingException {
+        String otp = String.valueOf(random.nextInt(100000, 999999));
+
+        Users user = usersRepository.findByEmail(request.getEmail()).orElseThrow(() ->
+                new RuntimeException("User not Found"));
+        user.setOtp(passwordEncoder.encode(otp));
+        emailService.sendMail(user.getEmail(),
+                MailTemplates.OTP(otp),
+                "Your OTP is for propertyAPP is " + otp,
+                null);
+        return ResponseEntity.ok(usersRepository.save(user));
+    }
     public ResponseEntity<?> verifyOTP(RequestDTO.registerRequestDTO request) {
         Users user = usersRepository.findByEmail(request.getEmail()).orElse(new Users());
         if (passwordEncoder.matches(request.getOtp(), user.getOtp())) {

@@ -78,15 +78,6 @@ public class CommonController {
         }
     }
 
-    @PostMapping("/verify")
-    public ResponseEntity<?> verify(@RequestHeader("Authorization") String auth,
-                                    @ModelAttribute RequestDTO.registerRequestDTO request) {
-        try {
-            return services.verifyOTP(request);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
-        }
-    }
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@ModelAttribute RequestDTO.registerRequestDTO request) {
@@ -97,14 +88,7 @@ public class CommonController {
         }
     }
 
-    @PostMapping("/send-otp")
-    public ResponseEntity<?> sendOTP(@ModelAttribute RequestDTO.registerRequestDTO request) {
-        try {
-            return services.sendOTP(request);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
-        }
-    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
@@ -147,6 +131,24 @@ public class CommonController {
         return propertiesService.getPropertyByRadius(lat, longi, rad);
     }
 
+    @PostMapping("/send-otp")
+    public ResponseEntity<?> sendOTP(@ModelAttribute RequestDTO.registerRequestDTO request) {
+        try {
+            return services.sendOTP(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> verify(@RequestHeader("Authorization") String auth,
+                                    @ModelAttribute RequestDTO.registerRequestDTO request) {
+        try {
+            return services.verifyOTP(request);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+        }
+    }
 
     @GetMapping("/pay/success")
     public ResponseEntity<?> successPay(@RequestParam("paymentId") String paymentId,
