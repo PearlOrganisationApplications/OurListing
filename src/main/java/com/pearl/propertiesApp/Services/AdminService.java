@@ -15,7 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminService {
@@ -75,7 +78,12 @@ public class AdminService {
     }
 
     public ResponseEntity<?> getAllProperties() {
-        return ResponseEntity.ok(propertiesRepository.findAll());
+        return ResponseEntity.ok(propertiesRepository.findAll().stream().map(property -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", property.getId());
+            map.put("documents", property.getDocuments());
+            return map;
+        }).collect(Collectors.toList()));
     }
 
     public ResponseEntity<?> getAllPaymentHistory() {
