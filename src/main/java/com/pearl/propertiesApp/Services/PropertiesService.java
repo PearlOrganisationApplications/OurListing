@@ -59,9 +59,12 @@ public class PropertiesService {
                 if (history == null)
                     return ResponseEntity.badRequest()
                             .body("Need to Purchase a plan before continuing");
-                if (history.getPaymentDate().compareTo(LocalDateTime.now()) > 30)
+                if (user.getPurchasedPlans().getLast().getEndDate().isAfter(LocalDateTime.now()))
                     return ResponseEntity.badRequest()
                             .body("Subscription Expired");
+            }
+            else{
+                return ResponseEntity.badRequest().body("Need to Purchase a plan before continuing");
             }
             Properties property = new Properties();
             property.setTitle(request.getTitle());
