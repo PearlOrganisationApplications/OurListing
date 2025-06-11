@@ -15,6 +15,7 @@ import com.pearl.propertiesApp.Repositories.PlansRepository;
 import com.pearl.propertiesApp.Services.CommonServices;
 import com.pearl.propertiesApp.Services.PropertiesService;
 import com.pearl.propertiesApp.Services.UsersService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class CommonController {
@@ -176,6 +178,7 @@ public class CommonController {
 
             Long userId = Long.valueOf(custom);
             Double amount = Double.parseDouble(transaction.getAmount().getTotal());
+            log.info("Amount found ;{}",amount);
             String method = executedPayment.getPayer().getPaymentMethod();
             String txnId = executedPayment.getId();
             String state = executedPayment.getState();
@@ -204,7 +207,10 @@ public class CommonController {
             Plans userPlan = plansRepository.findByamount(amount);
 
             purchasedPlans.setPlan(userPlan);
-            purchasedPlans.setStartDate(plans.getLast().getEndDate() != null ? plans.getLast().getEndDate().plusDays(1) : LocalDateTime.now());
+
+            purchasedPlans.setStartDate(plans.getLast().getEndDate()
+                    != null ? plans.getLast().getEndDate().plusDays(1) : LocalDateTime.now());
+
             purchasedPlans.setEndDate(purchasedPlans.getStartDate().plusDays(userPlan.getDuration()));
             purchasedPlans.setCurrent(LocalDateTime.now().isAfter(purchasedPlans.getStartDate()));
             plans.add(purchasedPlans);
