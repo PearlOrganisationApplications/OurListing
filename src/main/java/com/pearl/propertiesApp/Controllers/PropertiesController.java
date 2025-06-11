@@ -18,10 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -104,6 +101,7 @@ public class PropertiesController {
 
         try {
             APIContext freshContext = paypalConfig.getAPIContext();
+            freshContext.addHTTPHeader("PayPal-Request-Id", UUID.randomUUID().toString());
             Payment createdPayment = payment.create(freshContext);
             for (Links link : createdPayment.getLinks()) {
                 if (link.getRel().equals("approval_url")) {
