@@ -208,8 +208,13 @@ public class CommonController {
 
             purchasedPlans.setPlan(userPlan);
 
-            purchasedPlans.setStartDate(plans.getLast().getEndDate()
-                    != null ? plans.getLast().getEndDate().plusDays(1) : LocalDateTime.now());
+            LocalDateTime startDate;
+            if (!plans.isEmpty() && plans.getLast().getEndDate() != null) {
+                startDate = plans.getLast().getEndDate().plusDays(1);
+            } else {
+                startDate = LocalDateTime.now();
+            }
+            purchasedPlans.setStartDate(startDate);
 
             purchasedPlans.setEndDate(purchasedPlans.getStartDate().plusDays(userPlan.getDuration()));
             purchasedPlans.setCurrent(LocalDateTime.now().isAfter(purchasedPlans.getStartDate()));
