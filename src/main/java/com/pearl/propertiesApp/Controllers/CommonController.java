@@ -90,8 +90,6 @@ public class CommonController {
         }
     }
 
-
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(usersService.getUsersById(id));
