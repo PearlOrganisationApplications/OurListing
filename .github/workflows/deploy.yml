@@ -16,9 +16,9 @@ jobs:
       - name: SSH to Server and Clone Repo
         uses: appleboy/ssh-action@v1.1.0
         with:
-          host: 194.164.150.186
+          host: 72.61.229.5
           username: root
-          password: PearlVpsRoot@12390
+          password: Tuccimar@1230
           script: |
             cd /home/ubuntu/
             sudo ./update.sh
