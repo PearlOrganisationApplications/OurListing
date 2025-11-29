@@ -9,6 +9,7 @@ import com.pearl.propertiesApp.Repositories.PropertiesRepository;
 import com.pearl.propertiesApp.Repositories.UsersRepository;
 import com.pearl.propertiesApp.Utilities.CloudinaryService;
 import com.pearl.propertiesApp.Utilities.JwtTokenUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,22 +22,16 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService {
 
-    @Autowired
-    private UsersRepository usersRepository;
-    @Autowired
-    private PaymentHistoryRepository paymentHistoryRepository;
-    @Autowired
-    private PropertiesRepository propertiesRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    private PlansRepository plansRepository;
-    @Autowired
-    private CloudinaryService cloudinaryService;
+    private final UsersRepository usersRepository;
+    private final PaymentHistoryRepository paymentHistoryRepository;
+    private final PropertiesRepository propertiesRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final PlansRepository plansRepository;
+    private final CloudinaryService cloudinaryService;
 
     public ResponseEntity<?> register(RequestDTO.registerRequestDTO request) {
         Users user = new Users();

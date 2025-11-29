@@ -8,9 +8,12 @@ import com.pearl.propertiesApp.Configurations.PaypalConfig;
 import com.pearl.propertiesApp.DTOs.RequestDTO;
 import com.pearl.propertiesApp.Entities.PaymentHistory;
 import com.pearl.propertiesApp.Entities.Plans;
+import com.pearl.propertiesApp.Entities.PurchasedPlans;
+import com.pearl.propertiesApp.Entities.Users;
 import com.pearl.propertiesApp.Repositories.PlansRepository;
 import com.pearl.propertiesApp.Services.PropertiesService;
 import com.pearl.propertiesApp.Services.UsersService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,22 +21,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/properties")
 public class PropertiesController {
 
-    @Autowired
-    private PropertiesService propertiesService;
-    @Autowired
-    private UsersService usersService;
-    @Autowired
-    private PaypalConfig paypalConfig;
-    @Autowired
-    private PlansRepository plansRepository;
+    private final PropertiesService propertiesService;
+    private final UsersService usersService;
+    private final PaypalConfig paypalConfig;
+    private final PlansRepository plansRepository;
 
     @PostMapping("/add")
     public ResponseEntity<?> addProperties(@RequestHeader("Authorization") String auth,
@@ -88,6 +89,8 @@ public class PropertiesController {
         List<Plans> allPlans = plansRepository.findAllByEnabledTrue();
         Map<String, Double> plans = allPlans.stream()
                 .collect(Collectors.toMap(Plans::getPlanName, Plans::getAmount));
+        Users user=usersService.getUserByToken(auth.substring(7));
+
         if (plans.isEmpty()) {
             plans = new HashMap<>(Map.of(
                     "A", 500.00,
@@ -96,8 +99,46 @@ public class PropertiesController {
             ));
         }
 
-        Payment payment = propertiesService.getPayment(plans.get(plan),
-                usersService.getUserByToken(auth.substring(7)));
+        Payment payment = propertiesService.getPayment(plans.get(plan),user);
+        if(payment == null) {
+            PaymentHistory history = new PaymentHistory();
+            history.setAmount(plans.get(plan));
+            history.setPaymentDate(LocalDateTime.now());
+            history.setPaymentMethod("NONE");
+            history.setStatus("PAID");
+            history.setTransactionId(UUID.randomUUID().toString());
+
+            List<PurchasedPlans> purchasedPlansList = user.getPurchasedPlans() != null ? user.getPurchasedPlans() : new ArrayList<>();
+            PurchasedPlans purchasedPlans = new PurchasedPlans();
+            Plans userPlan = plansRepository.findByamount(history.getAmount());
+
+            purchasedPlans.setPlan(userPlan);
+
+            LocalDateTime startDate;
+            if (!purchasedPlansList.isEmpty() && purchasedPlansList.getLast().getEndDate() != null) {
+                startDate = purchasedPlansList.getLast().getEndDate().plusDays(1);
+            } else {
+                startDate = LocalDateTime.now();
+            }
+            purchasedPlans.setStartDate(startDate);
+
+            purchasedPlans.setEndDate(purchasedPlans.getStartDate().plusDays(userPlan.getDuration()));
+            purchasedPlans.setCurrent(LocalDateTime.now().isAfter(purchasedPlans.getStartDate()));
+            purchasedPlansList.add(purchasedPlans);
+            //SAVE URSELF
+            user.getPaymentHistory().add(history);
+            user.setPurchasedPlans(purchasedPlansList);
+
+            usersService.saveUser(user);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("amount", history.getAmount());
+            response.put("transactionId", history.getTransactionId());
+            response.put("status", history.getStatus());
+            response.put("method", history.getPaymentMethod());
+
+            return ResponseEntity.ok(response);
+        }
 
         try {
             APIContext freshContext = paypalConfig.getAPIContext();

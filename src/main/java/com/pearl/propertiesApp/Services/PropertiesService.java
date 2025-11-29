@@ -231,6 +231,7 @@ public class PropertiesService {
 
 
     public Payment getPayment(double sum, Users user) {
+        if(sum==0)return null;
         Amount amount = new Amount();
         amount.setCurrency("USD");
         amount.setTotal(String.format("%.2f", sum));
