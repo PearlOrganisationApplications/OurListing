@@ -21,6 +21,7 @@ public class RequestDTO {
         private String address;
         private String role;
         private String Otp;
+        private MultipartFile file;
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

@@ -9,6 +9,7 @@ import com.pearl.propertiesApp.Repositories.PropertiesRepository;
 import com.pearl.propertiesApp.Repositories.UsersRepository;
 import com.pearl.propertiesApp.Utilities.CloudinaryService;
 import com.pearl.propertiesApp.Utilities.FileStackService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,21 +26,14 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PropertiesService {
     @Value("${baseurl.web}")
     private String web;
-
-    @Autowired
-    private PropertiesRepository propertiesRepository;
-
-    @Autowired
-    private UsersRepository usersRepository;
-
-    @Autowired
-    private CloudinaryService cloudinaryService;
-
-    @Autowired
-    private FileStackService fileStackService;
+    private final PropertiesRepository propertiesRepository;
+    private final UsersRepository usersRepository;
+    private final CloudinaryService cloudinaryService;
+    private final FileStackService fileStackService;
 
     public ResponseEntity<?> addProperty(String token, RequestDTO.propertyRequest request) {
         try {

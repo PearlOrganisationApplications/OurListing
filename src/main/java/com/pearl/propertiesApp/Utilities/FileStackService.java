@@ -8,7 +8,11 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Service
@@ -22,17 +26,20 @@ public class FileStackService {
     private S3Client s3Client;
 
     public String uploadFile(MultipartFile file) throws IOException {
-        String key = UUID.randomUUID() + "-" + file.getOriginalFilename();
+        String fileName = file.getOriginalFilename(); // Get actual file name
+        if (fileName == null || fileName.isEmpty()) {
+            throw new IOException("Invalid file name");
+        }
 
-        PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .contentType(file.getContentType())
-                .build();
+        File dir = new File("upload");
+        if (!dir.exists()) {
+            if (!dir.mkdirs())
+                return null;
+        }
 
-        s3Client.putObject(request, RequestBody.fromBytes(file.getBytes()));
-
-        return "https://" + bucketName + ".s3.amazonaws.com/" + key;
+        String filePath = "upload" + File.separator + fileName;// Use actual filename
+        Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+        return "https://propertyapp.ddns.net/download?fileName=" + fileName;
     }
 
 }

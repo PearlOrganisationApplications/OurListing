@@ -9,8 +9,8 @@
 <body>
 <h1>Global Notifications</h1>
 <div id="notifications"></div>
-<input id="notificationContext" placeholder="Enter notification context" type="text">
-<input id="notificationMessage" placeholder="Enter notification message" type="text">
+<label for="notificationContext"></label><input id="notificationContext" placeholder="Enter notification context" type="text">
+<label for="notificationMessage"></label><input id="notificationMessage" placeholder="Enter notification message" type="text">
 <button onclick="sendNotification()">Send Notification</button>
 <script>
     var socket = new WebSocket('wss://propertyapp.ddns.net/ws/notifications');
@@ -32,7 +32,7 @@
     var notificationsDiv = document.getElementById('notifications');
     var notificationElement = document.createElement('div');
     notificationElement.textContent = 'Context: ' + notification.context +
-        ', message: ' + notification.message; // Fix line break here
+        ', message: ' + notification.message;
     notificationsDiv.appendChild(notificationElement);
 }
 

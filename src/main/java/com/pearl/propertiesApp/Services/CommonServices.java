@@ -8,6 +8,7 @@ import com.pearl.propertiesApp.Utilities.JwtTokenUtil;
 import com.pearl.propertiesApp.Utilities.MailTemplates;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +21,14 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CommonServices {
     SecureRandom random = new SecureRandom();
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UsersRepository usersRepository;
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    private EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
+    private final UsersRepository usersRepository;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final EmailService emailService;
 
     @Transactional
     public ResponseEntity<?> register(RequestDTO.registerRequestDTO request)

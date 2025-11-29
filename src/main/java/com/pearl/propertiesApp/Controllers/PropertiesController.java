@@ -38,7 +38,7 @@ public class PropertiesController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addProperties(@RequestHeader("Authorization") String auth,
-                                           @ModelAttribute RequestDTO.propertyRequest request) throws IOException {
+                                           @ModelAttribute RequestDTO.propertyRequest request) {
         log.info("request data :{}", request.toString());
         return propertiesService.addProperty(auth.substring(7), request);
     }
@@ -105,7 +105,7 @@ public class PropertiesController {
             history.setAmount(plans.get(plan));
             history.setPaymentDate(LocalDateTime.now());
             history.setPaymentMethod("NONE");
-            history.setStatus("PAID");
+            history.setStatus("approved");
             history.setTransactionId(UUID.randomUUID().toString());
 
             List<PurchasedPlans> purchasedPlansList = user.getPurchasedPlans() != null ? user.getPurchasedPlans() : new ArrayList<>();
