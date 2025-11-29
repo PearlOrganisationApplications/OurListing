@@ -17,14 +17,6 @@ import java.util.UUID;
 
 @Service
 public class FileStackService {
-
-
-    @Value("${aws.bucketName}")
-    private String bucketName;
-
-    @Autowired
-    private S3Client s3Client;
-
     public String uploadFile(MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename(); // Get actual file name
         if (fileName == null || fileName.isEmpty()) {
