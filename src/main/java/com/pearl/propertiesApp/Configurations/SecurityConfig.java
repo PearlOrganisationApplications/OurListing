@@ -60,6 +60,7 @@ public class SecurityConfig {
                                 "/ws/**",
                                 "/app",
                                 "/app/**",
+                                "/file/download/**",
                                 "/app/notification",
                                 "/ws/notifications",
                                 "/topic",

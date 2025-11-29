@@ -25,7 +25,7 @@ public class FileStackService {
 
         String filePath = "upload" + File.separator + fileName;// Use actual filename
         Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-        return "https://propertyapp.ddns.net/download?fileName=" + fileName;
+        return "https://propertyapp.ddns.net/file/download?fileName=" + fileName;
     }
 
 }
