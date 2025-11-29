@@ -59,7 +59,7 @@ public class CloudinaryService {
 
     public String getPhotoUrl(String id) {
         return String.format
-                ("http://res.cloudinary.com/%s/image/upload/c_scale,f_auto,q_auto,w_500/v1/PropertyPhotos/%s",
+                ("https://res.cloudinary.com/%s/image/upload/c_scale,f_auto,q_auto,w_500/v1/PropertyPhotos/%s",
                         cloudName, id);
     }
 
