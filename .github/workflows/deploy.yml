@@ -21,4 +21,4 @@ jobs:
           password: Application@12390
           script: |
             cd /home/ourlisting/
-            sudo ./deploy.sh
+            ./deploy.sh
