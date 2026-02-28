@@ -167,7 +167,7 @@ public class CommonController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment not approved.");
             }
 
-            Transaction transaction = executedPayment.getTransactions().getFirst();
+            Transaction transaction = executedPayment.getTransactions().get(0);
             String custom = transaction.getCustom();
 
             if (custom == null || !custom.matches("\\d+")) {
@@ -207,8 +207,8 @@ public class CommonController {
             purchasedPlans.setPlan(userPlan);
 
             LocalDateTime startDate;
-            if (!plans.isEmpty() && plans.getLast().getEndDate() != null) {
-                startDate = plans.getLast().getEndDate().plusDays(1);
+            if (!plans.isEmpty() && plans.get(plans.size() - 1).getEndDate() != null) {
+                startDate = plans.get(plans.size() - 1).getEndDate().plusDays(1);
             } else {
                 startDate = LocalDateTime.now();
             }

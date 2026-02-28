@@ -115,8 +115,8 @@ public class PropertiesController {
             purchasedPlans.setPlan(userPlan);
 
             LocalDateTime startDate;
-            if (!purchasedPlansList.isEmpty() && purchasedPlansList.getLast().getEndDate() != null) {
-                startDate = purchasedPlansList.getLast().getEndDate().plusDays(1);
+            if (!purchasedPlansList.isEmpty() && purchasedPlansList.get(purchasedPlansList.size() - 1).getEndDate() != null) {
+                startDate = purchasedPlansList.get(purchasedPlansList.size() - 1).getEndDate().plusDays(1);
             } else {
                 startDate = LocalDateTime.now();
             }

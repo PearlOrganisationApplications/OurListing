@@ -44,16 +44,18 @@ public class PropertiesService {
 
             Users user = userOptional.get();
             if (!user.getPaymentHistory().isEmpty()) {
-                PaymentHistory history = user.getPaymentHistory()
+                List<PaymentHistory> approvedPayments = user.getPaymentHistory()
                         .stream()
-                        .filter(p ->
-                                p.getStatus().equals("approved"))
-                        .toList()
-                        .getLast();
-                if (history == null)
+                        .filter(p -> p.getStatus().equals("approved"))
+                        .toList();
+                
+                if (approvedPayments.isEmpty())
                     return ResponseEntity.badRequest()
                             .body("Need to Purchase a plan before continuing");
-                if (user.getPurchasedPlans().getLast().getEndDate().isBefore(LocalDateTime.now()))
+
+                PaymentHistory history = approvedPayments.get(approvedPayments.size() - 1);
+
+                if (user.getPurchasedPlans().get(user.getPurchasedPlans().size() - 1).getEndDate().isBefore(LocalDateTime.now()))
                     return ResponseEntity.badRequest()
                             .body("Subscription Expired");
             }
