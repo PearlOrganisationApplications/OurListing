@@ -16,9 +16,9 @@ jobs:
       - name: SSH to Server and Clone Repo
         uses: appleboy/ssh-action@v1.1.0
         with:
-          host: 72.61.229.5
+          host: 187.77.189.57
           username: root
-          password: Tuccimar@1230
+          password: Application@12390
           script: |
-            cd /home/ubuntu/
-            sudo ./update.sh
+            cd /home/ourlisting/
+            sudo ./deploy.sh
