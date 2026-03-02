@@ -1,4 +1,4 @@
-name: Property App Ci/CD Pipeline
+name: OurListing deployment Script
 
 on:
   push:
@@ -11,14 +11,15 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
-      - name: SSH to Server and Clone Repo
-        uses: appleboy/ssh-action@v1.1.0
+      - name: SSH and Run Script
+        uses: appleboy/ssh-action@v1.2.4
         with:
-          host: 187.77.189.57
-          username: root
-          password: Application@12390
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            cd /home/ourlisting/
             ./deploy.sh
