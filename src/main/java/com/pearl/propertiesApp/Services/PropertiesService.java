@@ -54,7 +54,7 @@ public class PropertiesService {
                 //             .body("Need to Purchase a plan before continuing");
 
                 PaymentHistory history = approvedPayments.get(approvedPayments.size() - 1);
-
+            }
             //     if (user.getPurchasedPlans().get(user.getPurchasedPlans().size() - 1).getEndDate().isBefore(LocalDateTime.now()))
             //         return ResponseEntity.badRequest()
             //                 .body("Subscription Expired");
