@@ -49,19 +49,19 @@ public class PropertiesService {
                         .filter(p -> p.getStatus().equals("approved"))
                         .toList();
                 
-                if (approvedPayments.isEmpty())
-                    return ResponseEntity.badRequest()
-                            .body("Need to Purchase a plan before continuing");
+                // if (approvedPayments.isEmpty())
+                //     return ResponseEntity.badRequest()
+                //             .body("Need to Purchase a plan before continuing");
 
                 PaymentHistory history = approvedPayments.get(approvedPayments.size() - 1);
 
-                if (user.getPurchasedPlans().get(user.getPurchasedPlans().size() - 1).getEndDate().isBefore(LocalDateTime.now()))
-                    return ResponseEntity.badRequest()
-                            .body("Subscription Expired");
-            }
-            else{
-                return ResponseEntity.badRequest().body("Need to Purchase a plan before continuing");
-            }
+            //     if (user.getPurchasedPlans().get(user.getPurchasedPlans().size() - 1).getEndDate().isBefore(LocalDateTime.now()))
+            //         return ResponseEntity.badRequest()
+            //                 .body("Subscription Expired");
+            // }
+            // else{
+            //     return ResponseEntity.badRequest().body("Need to Purchase a plan before continuing");
+            // }
             Properties property = new Properties();
             property.setTitle(request.getTitle());
             property.setInfo(request.getInfo());
