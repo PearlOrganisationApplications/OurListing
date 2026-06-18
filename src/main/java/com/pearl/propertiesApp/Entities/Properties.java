@@ -28,7 +28,8 @@ public class Properties {
     private String info;
 
     @JsonManagedReference
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnoreProperties({"token", "favorites","paymentHistory"})
     private Users user;
