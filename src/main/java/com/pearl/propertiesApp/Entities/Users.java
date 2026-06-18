@@ -53,6 +53,9 @@ public class Users {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Properties> favorites;
 
+    @OneToMany(mappedBy = "user")
+    private List<Properties> properties;
+
     @Enumerated(EnumType.STRING)
     private role role;
 
