@@ -1,0 +1,94 @@
+{
+  "info": {
+    "name": "OurListing API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Admin",
+      "item": [
+        { "name": "Create Admin", "request": { "method": "POST", "url": "{{baseUrl}}/admin/create" } },
+        { "name": "Admin Login", "request": { "method": "POST", "url": "{{baseUrl}}/admin/login" } },
+        { "name": "Admin Login GET", "request": { "method": "GET", "url": "{{baseUrl}}/admin/login" } },
+        { "name": "Admin Logout", "request": { "method": "POST", "url": "{{baseUrl}}/admin/logout" } },
+        { "name": "Add Plan", "request": { "method": "POST", "url": "{{baseUrl}}/admin/addPlan" } },
+        { "name": "Get Users", "request": { "method": "GET", "url": "{{baseUrl}}/admin/users" } },
+        { "name": "Verify User", "request": { "method": "GET", "url": "{{baseUrl}}/admin/users/verify/1" } },
+        { "name": "Get Properties", "request": { "method": "GET", "url": "{{baseUrl}}/admin/properties" } },
+        { "name": "Get Payment History", "request": { "method": "GET", "url": "{{baseUrl}}/admin/payment-history" } },
+        { "name": "Delete User", "request": { "method": "DELETE", "url": "{{baseUrl}}/admin/users/1" } },
+        { "name": "Delete Property", "request": { "method": "DELETE", "url": "{{baseUrl}}/admin/properties/1" } }
+      ]
+    },
+    {
+      "name": "Common",
+      "item": [
+        { "name": "Register", "request": { "method": "POST", "url": "{{baseUrl}}/api/register" } },
+        { "name": "Login", "request": { "method": "POST", "url": "{{baseUrl}}/api/login" } },
+        { "name": "Get Login", "request": { "method": "GET", "url": "{{baseUrl}}/api/login" } },
+        { "name": "Logout", "request": { "method": "POST", "url": "{{baseUrl}}/api/logout" } },
+        { "name": "Forgot Password", "request": { "method": "POST", "url": "{{baseUrl}}/api/forgot-password" } },
+        { "name": "Get User By ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/1" } },
+        { "name": "Update User", "request": { "method": "PUT", "url": "{{baseUrl}}/api" } },
+        { "name": "Delete User", "request": { "method": "DELETE", "url": "{{baseUrl}}/api" } },
+        { "name": "Get All Properties", "request": { "method": "GET", "url": "{{baseUrl}}/api/properties" } },
+        { "name": "Get Property By ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/properties/1" } },
+        { "name": "Get Nearby Properties", "request": { "method": "GET", "url": "{{baseUrl}}/api/properties/nearby?latitude=0&longitude=0&radius=10" } },
+        { "name": "Send OTP", "request": { "method": "POST", "url": "{{baseUrl}}/api/send-otp" } },
+        { "name": "Verify OTP", "request": { "method": "POST", "url": "{{baseUrl}}/api/verify" } },
+        { "name": "Payment Success", "request": { "method": "GET", "url": "{{baseUrl}}/api/pay/success?paymentId=test&PayerID=test" } },
+        { "name": "Payment Cancel", "request": { "method": "GET", "url": "{{baseUrl}}/api/pay/cancel?token=test" } }
+      ]
+    },
+    {
+      "name": "File",
+      "item": [
+        { "name": "Get Files", "request": { "method": "GET", "url": "{{baseUrl}}/file/files" } },
+        { "name": "Download File", "request": { "method": "GET", "url": "{{baseUrl}}/file/download?fileName=test.jpg" } },
+        { "name": "Upload File", "request": { "method": "POST", "url": "{{baseUrl}}/file/upload" } }
+      ]
+    },
+    {
+      "name": "Properties",
+      "item": [
+        { "name": "Add Property", "request": { "method": "POST", "url": "{{baseUrl}}/properties/add" } },
+        { "name": "Get Properties", "request": { "method": "GET", "url": "{{baseUrl}}/properties" } },
+        { "name": "Get Property By ID", "request": { "method": "GET", "url": "{{baseUrl}}/properties/1" } },
+        { "name": "Update Property", "request": { "method": "PUT", "url": "{{baseUrl}}/properties/1" } },
+        { "name": "Delete Property", "request": { "method": "DELETE", "url": "{{baseUrl}}/properties/1" } },
+        { "name": "Add Payment History", "request": { "method": "POST", "url": "{{baseUrl}}/properties/payment-history" } },
+        { "name": "Get Payment History", "request": { "method": "GET", "url": "{{baseUrl}}/properties/payment-history" } },
+        { "name": "Get Plans", "request": { "method": "GET", "url": "{{baseUrl}}/properties/plans" } },
+        { "name": "Create Payment", "request": { "method": "POST", "url": "{{baseUrl}}/properties/pay?plan=A" } }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        { "name": "Get User Properties", "request": { "method": "GET", "url": "{{baseUrl}}/user/properties" } },
+        { "name": "Get User Property By ID", "request": { "method": "GET", "url": "{{baseUrl}}/user/properties/1" } },
+        { "name": "Get User Nearby Properties", "request": { "method": "GET", "url": "{{baseUrl}}/user/properties/nearby?latitude=0&longitude=0&radius=10" } },
+        { "name": "Add To Favorites", "request": { "method": "POST", "url": "{{baseUrl}}/user/favorites/1" } },
+        { "name": "Get Favorites", "request": { "method": "GET", "url": "{{baseUrl}}/user/favorites" } }
+      ]
+    },
+    {
+      "name": "Additions",
+      "item": [
+        { "name": "Search Properties (Properties)", "request": { "method": "GET", "url": "{{baseUrl}}/properties/search?keyword=villa" } },
+        { "name": "Filter Properties (Properties)", "request": { "method": "GET", "url": "{{baseUrl}}/properties/filter?listingType=Sale" } },
+        { "name": "Search Properties (Common)", "request": { "method": "GET", "url": "{{baseUrl}}/api/properties/search?keyword=villa" } },
+        { "name": "Filter Properties (Common)", "request": { "method": "GET", "url": "{{baseUrl}}/api/properties/filter?listingType=Sale" } },
+        { "name": "Search Properties (User)", "request": { "method": "GET", "url": "{{baseUrl}}/user/properties/search?keyword=villa" } },
+        { "name": "Filter Properties (User)", "request": { "method": "GET", "url": "{{baseUrl}}/user/properties/filter?listingType=Sale" } }
+      ]
+    }
+  ]
+}

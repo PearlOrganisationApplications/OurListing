@@ -48,6 +48,16 @@ public class PropertiesController {
         return propertiesService.getProperties(auth.substring(7));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProperties(@RequestParam("keyword") String keyword) {
+        return propertiesService.searchProperties(keyword);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterProperties(@RequestParam("listingType") String listingType) {
+        return propertiesService.filterPropertiesByListingType(listingType);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getPropertyById(@RequestHeader("Authorization") String auth,
                                              @PathVariable Long id) {

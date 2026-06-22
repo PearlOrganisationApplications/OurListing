@@ -255,4 +255,27 @@ public class PropertiesService {
         return payment;
     }
 
+    public ResponseEntity<?> searchProperties(String keyword) {
+        try {
+            List<Properties> properties = propertiesRepository.searchProperties(keyword);
+            return ResponseEntity.ok(properties);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error searching properties: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> filterPropertiesByListingType(String listingType) {
+        try {
+            Properties.listType type = Properties.listType.valueOf(listingType);
+            List<Properties> properties = propertiesRepository.findByListingType(type);
+            return ResponseEntity.ok(properties);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid listing type. Must be Rent, Sale, or Lease.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error filtering properties: " + e.getMessage());
+        }
+    }
+
 }

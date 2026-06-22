@@ -119,6 +119,16 @@ public class CommonController {
         return propertiesService.getAllProperties();
     }
 
+    @GetMapping("/properties/search")
+    public ResponseEntity<?> searchProperties(@RequestParam("keyword") String keyword) {
+        return propertiesService.searchProperties(keyword);
+    }
+
+    @GetMapping("/properties/filter")
+    public ResponseEntity<?> filterProperties(@RequestParam("listingType") String listingType) {
+        return propertiesService.filterPropertiesByListingType(listingType);
+    }
+
     @GetMapping("/properties/{Id}")
     public ResponseEntity<?> getProperties(@PathVariable Long Id) {
         return propertiesService.getPropertyById(Id);
